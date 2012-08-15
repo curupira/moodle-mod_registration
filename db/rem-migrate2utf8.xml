@@ -1,0 +1,32 @@
+<DBMIGRATION type="mod/registration" VERSION="2006041502">
+  <TABLES>
+    <TABLE name="registration">
+      <FIELDS>
+        <FIELD name="name" method="PHP_FUNCTION" type="varchar" length="255">
+          <PHP_FUNCTION>
+            migrate2utf_registration_name(RECORDID)
+          </PHP_FUNCTION>
+        </FIELD>
+        <FIELD name="description" method="PHP_FUNCTION" type="text">
+          <PHP_FUNCTION>
+            migrate2utf_registration_description(RECORDID)
+          </PHP_FUNCTION>
+        </FIELD>
+        <FIELD name="room" method="PHP_FUNCTION" type="varchar" length="30">
+          <PHP_FUNCTION>
+            migrate2utf_registration_room(RECORDID)
+          </PHP_FUNCTION>
+        </FIELD>
+      </FIELDS>
+    </TABLE>
+    <TABLE name="registration_submissions">
+      <FIELDS>
+        <FIELD name="comment" method="PHP_FUNCTION" type="text">
+          <PHP_FUNCTION>
+            migrate2utf_registration_submissions_comment(RECORDID)
+          </PHP_FUNCTION>
+        </FIELD>
+      </FIELDS>
+    </TABLE>
+  </TABLES>
+</DBMIGRATION>

@@ -1,0 +1,30 @@
+<!-- $Id$ //-->
+
+<form method="post" action="module.php" name="form">
+<input type="hidden" name="sesskey" value="<?php echo $USER->sesskey ?>" />
+
+<table cellpadding="9" cellspacing="0">
+<tr valign="top">
+    <td align="right">
+        <p>registration_max_students:</p>
+    </td>
+    <td>
+        <?php
+        $choices = array('100'=>'100', '150'=>'150', '200'=>'200', '300'=>'300',
+                         '400'=>'400', '500'=>'500', '600'=>'600', '800'=>'800', '1000'=>'1000');
+        choose_from_menu ($choices, 'registration_maxstudents', $CFG->registration_maxstudents, '');
+        ?>
+    </td>
+    <td>
+        <?php print_string('maximumsize', 'registration') ?>
+    </td>
+</tr>
+
+<tr>
+    <td colspan="3" align="center">
+        <input type="submit" value="<?php print_string('savechanges') ?>" />
+    </td>
+</tr>
+</table>
+
+</form>

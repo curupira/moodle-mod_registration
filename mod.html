@@ -1,0 +1,126 @@
+<?php
+    if (empty($form->name)) {
+        $form->name = "";
+    }
+    if (empty($form->description)) {
+        $form->description = "";
+    }
+    if (empty($form->number)) {
+        $form->number = 40;
+    }
+    if (!isset($form->grade)) {
+        $form->grade = 0;
+    }
+    if (empty($form->timedue)) {
+        $form->timedue = "";
+    }
+    $maxstudents = $CFG->registration_maxstudents; 
+?>
+
+<form name="form" method="post" action="mod.php">
+<table cellpadding="10">
+<tr valign="top">
+    <td align=right><b><?php print_string("registrationname", "registration") ?>:</b></td>
+    <td>
+        <input type="text" name="name" size=60 value="<?php p($form->name) ?>">
+    </td>
+</tr>
+<tr valign="top">
+    <td align=right><b><?php print_string("description", "registration") ?>:</b><br><br><br>
+    <font size="1">
+     <?php
+        helpbutton("writing", get_string("helpwriting"), "moodle", true, true);
+        echo "<br />";
+        if ($usehtmleditor) {
+           helpbutton("richtext", get_string("helprichtext"), "moodle", true, true);
+        } else {
+           emoticonhelpbutton("form", "description");
+        } 
+      ?>
+      <br />
+    </font>
+    </td>
+    <td>
+    <?php
+       print_textarea($usehtmleditor, 10, 60, 680, 400, "description", $form->description);
+    
+       if ($usehtmleditor) {
+           echo '<input type="hidden" name="format" value="'.FORMAT_HTML.'" />';
+       } else {
+           echo '<p align="right">';
+           helpbutton("textformat", get_string("formattexttype"));
+           print_string("formattexttype");
+           echo ':&nbsp;';
+           if (!$form->format) {
+               $form->format = $defaultformat;
+           }
+           choose_from_menu(format_text_menu(), "format", $form->format, ""); 
+           echo '</p>';
+       }
+    ?>
+    </td>
+</tr>
+<tr valign=top>
+    <td align=right><b><?php print_string("maximumsize", "registration") ?>:</b></td>
+	<td><?php
+	for($i=$maxstudents; $i>=1; $i--) $choices[$i] = $i;
+    choose_from_menu ($choices, "number", $form->number, "");
+    ?>
+	</td>
+</tr>
+<tr valign=top>
+    <td align=right><b><?php print_string("maximumpoints", "registration") ?>:</b></td>
+    <td>
+        <?php
+        print_grade_menu($course->id, "grade", "$form->grade");
+        ?>
+    </td>
+</tr>
+<tr valign=top>
+    <td align=right><b><?php print_string("place", "registration") ?>:</b></td>
+    <td>
+        <input type="text" name="room" size=10 maxlength="30" value="<?php p($form->room) ?>">
+    </td>
+</tr>
+<tr valign=top>
+    <td align=right><b><?php print_string("allowqueue", "registration") ?>:</b></td>
+    <td>
+        <input type="checkbox" name="allowqueue" value="1" <?php if (!empty($form->allowqueue)) echo 'checked="checked" '; ?>/>
+    </td>
+</tr>
+<tr valign=top>
+    <td align=right><b><?php print_string("duedate", "registration") ?>:</b></td>
+    <td><?php
+           print_date_selector("dueday", "duemonth", "dueyear", $form->timedue);
+           echo "&nbsp;-&nbsp;";
+           print_time_selector("duehour", "dueminute", $form->timedue);
+    ?></td>
+</tr>
+<tr valign=top>
+    <td align=right><b><?php print_string("availabledate", "registration") ?>:</b></td>
+    <td><?php
+           print_date_selector("availableday", "availablemonth", "availableyear", $form->timeavailable);
+           echo "&nbsp;-&nbsp;";
+           print_time_selector("availablehour", "availableminute", $form->timeavailable);
+    ?></td>
+</tr>
+</table>
+<br />
+<center>
+<input type="hidden" name=course     value="<?php p($form->course) ?>" />
+<input type="hidden" name=coursemodule  value="<?php p($form->coursemodule) ?>" />
+<input type="hidden" name=section       value="<?php p($form->section) ?>" />
+<input type="hidden" name=module     value="<?php p($form->module) ?>" />
+<input type="hidden" name=modulename value="<?php p($form->modulename) ?>" />
+<input type="hidden" name=instance   value="<?php p($form->instance) ?>" />
+<input type="hidden" name=mode       value="<?php p($form->mode) ?>" />
+<input type="hidden" name=sesskey value="<?php p($form->sesskey) ?>" /> 
+<input type="submit" value="<?php print_string("savechanges") ?>" />
+<input type="submit" name=cancel value="<?php print_string("cancel") ?>" />
+</center>
+</form>
+<?php
+
+
+
+?>
