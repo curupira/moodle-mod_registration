@@ -41,7 +41,7 @@
             //Now, build the registration record structure
             $registration->course = $restore->course_id;
             $registration->name = backup_todb($info['MOD']['#']['NAME']['0']['#']);
-            $registration->description = backup_todb($info['MOD']['#']['DESCRIPTION']['0']['#']);
+            $registration->intro = backup_todb($info['MOD']['#']['INTRO']['0']['#']);
             $registration->format = backup_todb($info['MOD']['#']['FORMAT']['0']['#']);
             $registration->resubmit = backup_todb($info['MOD']['#']['RESUBMIT']['0']['#']);
             $registration->type = backup_todb($info['MOD']['#']['TYPE']['0']['#']);
@@ -299,19 +299,19 @@
         global $CFG;
         $status = true;
 
-        if ($registrations = get_records_sql ("SELECT a.id, a.description
+        if ($registrations = get_records_sql ("SELECT a.id, a.intro
                                    FROM {$CFG->prefix}registration a
                                    WHERE a.course = $restore->course_id")) {
-            //Iterate over each registration->description
+            //Iterate over each registration->intro
             $i = 0;   //Counter to send some output to the browser to avoid timeouts
             foreach ($registrations as $registration) {
                 //Increment counter
                 $i++;
-                $content = $registration->description;
+                $content = $registration->intro;
                 $result = restore_decode_content_links_worker($content,$restore);
                 if ($result != $content) {
                     //Update record
-                    $registration->description = addslashes($result);
+                    $registration->intro = addslashes($result);
                     $status = update_record("registration",$registration);
                     if ($CFG->debug>7) {
                         if (!defined('RESTORE_SILENTLY')) {

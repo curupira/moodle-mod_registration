@@ -16,7 +16,6 @@ $string['clearall'] = 'Limpar todos';
 $string['closed'] = "Avaliacao encerrada";
 $string['datetext'] = "Voce esta convocado na data"; 
 $string['deleteall'] = 'Remover todos';
-$string['description'] = 'Texto introdutorio';
 $string['duedate'] = 'Data';
 $string['early'] = "\$a early";
 $string['feedback'] = "Feedback";

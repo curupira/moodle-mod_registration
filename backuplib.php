@@ -57,7 +57,7 @@
         fwrite ($bf,full_tag("ID",4,false,$registration->id));
         fwrite ($bf,full_tag("MODTYPE",4,false,"registration"));
         fwrite ($bf,full_tag("NAME",4,false,$registration->name));
-        fwrite ($bf,full_tag("DESCRIPTION",4,false,$registration->description));
+        fwrite ($bf,full_tag("INTRO",4,false,$registration->intro));
         fwrite ($bf,full_tag("NUMBER",4,false,$registration->number));
         fwrite ($bf,full_tag("ROOM",4,false,$registration->room));
         fwrite ($bf,full_tag("TIMEDUE",4,false,$registration->timedue));

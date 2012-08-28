@@ -11,20 +11,20 @@ $a = optional_param('a', 0, PARAM_INT); // registration ID
 
 if ($id) 
 {
-        if (! $cm = get_record("course_modules", "id", $id))
+  if (! $cm = $DB->get_record("course_modules", array('id'=>$id)))
                 error("Course Module ID was incorrect");
-        if (! $course = get_record("course", "id", $cm->course))
+  if (! $course = $DB->get_record("course",  array('id'=>$cm->course)))
                 error("Course is misconfigured");
-        if (! $registration = get_record("registration", "id", $cm->instance))
+  if (! $registration = $DB->get_record("registration",  array('id'=>$cm->instance)))
                 error("Course module is incorrect");
 } 
 else 
 {
-        if (! $registration = get_record("registration", "id", $a))
+  if (! $registration = $DB->get_record("registration",  array('id'=>$a)))
                 error("Course module is incorrect");
-        if (! $course = get_record("course", "id", $registration->course))
+  if (! $course = $DB->get_record("course",  array('id'=>$registration->course)))
                 error("Course is misconfigured");
-        if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
+        if (! $cm = $DB->get_coursemodule_from_instance("registration", $registration->id, $course->id))
                 error("Course Module ID was incorrect");
 }
 require_course_login($course);
@@ -82,19 +82,20 @@ if ($form = data_submitted())
                 $newanswer->timecreated = $timenow;
                 $newanswer->timemodified = $timenow;
                 $newanswer->registration = $registration->id;
+		$newanswer->comment = "";
                 $newanswer->userid = ($_POST['action']) ? $_POST['idstudent'] : $USER->id;
-                $num_students = get_records("registration_submissions","registration",$cm->instance);
+                $num_students = $DB->get_records("registration_submissions",array("registration"=>$cm->instance));
                 $sql = "SELECT userid FROM ".$CFG->prefix."registration_submissions, ".$CFG->prefix."registration 
                 WHERE registration = ".$CFG->prefix."registration.id 
                 AND course = '".$cm->course."'
                 AND userid = '".$USER->id."'
                 AND registration = '".$cm->instance."'";
-                $result = get_record_sql($sql);
+                $result = $DB->get_record_sql($sql);
                 // zrusene obmedzenie
                 if (empty($num_students)) $num_students = array() ;
                 if (!$result->userid && ((count($num_students) < $registration->number) || $registration->allowqueue))
                 {
-                  if (! insert_record("registration_submissions", $newanswer)) 
+                  if (! $DB->insert_record("registration_submissions", $newanswer)) 
                         error("Could not save your choice");
                   add_to_log($course->id, "registration", "subscribe", "view.php?id=$cm->id", $USER->id, $cm->id, $USER->id);
                   redirect("view.php?id=$cm->id","",0);
@@ -104,7 +105,7 @@ if ($form = data_submitted())
         elseif ($form->answer == $stranswercancel)
         {
                 $select = "SELECT s.userid, r.number FROM ".$CFG->prefix."registration_submissions s, ".$CFG->prefix."registration r WHERE s.registration = '".$registration->id."' AND s.registration = r.id ORDER BY s.id";
-                $result = get_records_sql($select);
+                $result = $DB->get_records_sql($select);
                 $user_delete = ($_POST['action']) ? $_POST['idstudent_del'] : $USER->id;
                 if($result)
                 {
@@ -119,7 +120,7 @@ if ($form = data_submitted())
                         if($value->number >= $order && $i > $value->number)
                                 $user_id = $pole[$value->number+1];
                 }
-                if (! delete_records("registration_submissions", "userid", $user_delete, "registration", $cm->instance))
+                if (! $DB->delete_records("registration_submissions",array("userid"=>$user_delete, "registration"=>$cm->instance)))
                         error("Could not save your choice");
                 else
                 {
@@ -130,7 +131,7 @@ if ($form = data_submitted())
                                 $message->name = $registration->name;
                                 $message->url = "$CFG->wwwroot/mod/registration/view.php?id=$cm->id";
                                 $select = "SELECT * FROM ".$CFG->prefix."user u WHERE u.id = '".$user_id."'";
-                                $student = get_record_sql($select);
+                                $student = $DB->get_record_sql($select);
                                 $site = get_site();
                                 $strsubject = strip_tags(get_string('subject', 'registration', $message));
                                 email_to_user($student, $site->shortname, $strsubject, get_string("message", "registration", $message));
@@ -143,7 +144,7 @@ if ($form = data_submitted())
 }
 
 print_simple_box_start("center");
-print_heading($registration->name, "center");
+echo $OUTPUT->heading($registration->name);
 
 $timedifference_due = $registration->timedue - time();
 $timedifference_avail = $registration->timeavailable - time();
@@ -169,6 +170,8 @@ if ($timedifference_due < 31536000)
 	echo "</table>";
 }
 
+$table = new html_table();
+
 if($ismyteacher)
 {
   if ($registration->grade) {
@@ -187,12 +190,13 @@ else
 
 $scale = make_grades_menu($registration->grade);
 
-$students = get_records("registration_submissions","registration",$cm->instance,"id");
+$students = $DB->get_records("registration_submissions",array("registration"=>$cm->instance),"id");
 $i = 0;
 if (!$students) $students = array();
+$text_assessment='';
 foreach ($students as $data)
 {
-        $person = get_record("user","id",$data->userid);
+  $person = $DB->get_record("user",array("id"=>$data->userid));
         $points[$USER->id] = $data->grade;
         if($i >= $registration->number)
         {
@@ -221,7 +225,7 @@ foreach ($students as $data)
                         $text_assessment = '<div style="color: #800000; font-weight: bold;">'.get_string("feedback","registration").": ".$scale[$data->grade].'<br />'.get_string("note", "registration").": ".$data->comment."</div>";
         }
 }
-if($ismyteacher && $table->data){
+if($ismyteacher && isset($table->data)){
   if ($registration->grade) {
     $table->data[] = array ("", "", "", "", "", '<INPUT type="submit" name="answer" value="'.$stranswercancel.'" />', "");
   }else{
@@ -250,10 +254,10 @@ if ($registration->timeavailable < time())
 }
 
 $sql = "SELECT * FROM ".$CFG->prefix."modules WHERE name LIKE 'registration'";
-$moduleID = get_record_sql($sql);
+$moduleID = $DB->get_record_sql($sql);
 
 $sql = "SELECT * FROM ".$CFG->prefix."course_modules WHERE course='".$cm->course."' AND module = '".$moduleID->id."' AND instance = '".$cm->instance."'";
-$sectionID = get_record_sql($sql);
+$sectionID = $DB->get_record_sql($sql);
 
 $position = registration_get_position_in_list($cm->instance,$USER->id);
 
@@ -267,7 +271,7 @@ AND r.timedue > '".time()."'
 ORDER BY r.timedue";
 
 //add last line - if date is closed - student can sign in to another date (in the same week or topics)
-$moduleID_new = get_records_sql($sql);
+$moduleID_new = $DB->get_records_sql($sql);
 if($moduleID_new != "")
 {
 	//booked on a future exam - show only if date is not closed
@@ -275,19 +279,19 @@ if($moduleID_new != "")
 	{
 		foreach($moduleID_new as $value)
 		{
-			$result = get_record("registration", "id", $value->instance);
-			$sql = "SELECT * FROM ".$CFG->prefix."course_modules WHERE course='".$cm->course."' AND module = '".$moduleID->id."' AND instance = '".$value->instance."'";
-			$sectionID_all = get_record_sql($sql);
-			if($sectionID->section == $sectionID_all->section)
-			{
-				if($position > $registration->number) {
-					$queue = " (".get_string("in_queue","registration").")";
-				} else {
-					$queue = "";
-				}
-				echo '<a href="view.php?a='.$value->instance.'"><div style="color: red; font-weight: bold; margin-bottom: 5px;">'.get_string("datetext","registration").$queue.': &quot;'.$result->name.'&quot; , '.userdate($result->timedue).'</div></a>';
-				$registrable = false;
-			}
+		  $result = $DB->get_record("registration", array("id"=>$value->instance));
+		  $sql = "SELECT * FROM ".$CFG->prefix."course_modules WHERE course='".$cm->course."' AND module = '".$moduleID->id."' AND instance = '".$value->instance."'";
+		  $sectionID_all = $DB->get_record_sql($sql);
+		  if($sectionID->section == $sectionID_all->section)
+		    {
+		      if($position > $registration->number) {
+			$queue = " (".get_string("in_queue","registration").")";
+		      } else {
+			$queue = "";
+		      }
+		      echo '<a href="view.php?a='.$value->instance.'"><div style="color: red; font-weight: bold; margin-bottom: 5px;">'.get_string("datetext","registration").$queue.': &quot;'.$result->name.'&quot; , '.userdate($result->timedue).'</div></a>';
+		      $registrable = false;
+		    }
 		}
 	}
 }
@@ -327,10 +331,11 @@ echo "<input type='hidden' name='id' value='".$id."'>\n";
 echo "<input type='hidden' name='action' value='1'>\n";
 if (has_capability('mod/registration:viewlist', $context))
 {
-	print_table($table);
-	echo "</form>\n";
+  echo html_writer::table($table);
+  //	print_table($table);
+  echo "</form>\n";
 
-	echo format_text($registration->description);
+  echo format_text($registration->intro);
 }
 print_simple_box_end();
 
@@ -364,7 +369,9 @@ if ($ismyteacher)
                         $where .= " AND u.id <> ".implode(" AND u.id <> ", $condition);
                 $sort = ' ORDER BY u.lastname, u.firstname';
 
-                $result = get_records_sql($select.$from.$where.$sort);
+                $result = $DB->get_records_sql($select.$from.$where.$sort);
+
+		$table1 = new html_table();
                 $table1->head = array ("", $strlastname, $strfirstname);
                 $table1->align = array ("right", "left", "left");
                 if($result)
@@ -383,17 +390,20 @@ if ($ismyteacher)
                 }
         }
         print_simple_box_start("center");
+	$table2 = new html_table();
         $table2->head = array ($strfirstname." <span style='font-weight: normal;'>".$stror."</span> ".$strlastname ." <span style='font-weight: normal;'>".$stror."</span> %");
         $table2->align = array ("left");
         $table2->data[] = array ("<input type='text' name='search'>&nbsp;<input type='submit' name='submit' value='".$strlookfor."'>");
         echo "<form action='view.php' method='post'>\n";
         echo "<input type='hidden' name='id' value='".$id."'>\n";
         echo "<input type='hidden' name='action' value='1'>\n";
-        print_table($table2);
+	html_writer::table($table2);
+	//        print_table($table2);
         if($result) 
-          print_table($table1);
+	  html_writer::table($table1);
+	// print_table($table1);
         echo "</form>\n";
         print_simple_box_end();
 }
-print_footer($course);
+echo $OUTPUT->footer();
 ?>

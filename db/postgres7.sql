@@ -2,7 +2,7 @@ CREATE TABLE prefix_registration (
 id SERIAL primary key,
 course integer NOT NULL default '0',
 name text NOT NULL default '',
-description text NOT NULL default '',
+intro text NOT NULL default '',
 number integer NOT NULL default '0',
 room text NOT NULL default '',
 timedue integer NOT NULL default '0',

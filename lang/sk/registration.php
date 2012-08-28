@@ -16,7 +16,6 @@ $string['clearall'] = 'Clear all';
 $string['closed'] = "Termín je uzavretý";
 $string['datetext'] = "Ste prihlásený/á na termín"; 
 $string['deleteall'] = 'Delete all';
-$string['description'] = 'Popis';
 $string['duedate'] = 'Dátum';
 $string['early'] = "\$a vèas";
 $string['feedback'] = "Odpoveï";

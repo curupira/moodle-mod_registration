@@ -18,7 +18,6 @@ $string['datetext'] = "Vous êtes inscrits à l'évènement";
 // Display a message when unsubscribing [PASCAL Univ. Paris Ouest] :
 $string['unsubscribetext'] = "Vous êtes désinscrits de l'évènement"; 
 $string['deleteall'] = 'Supprimer tout';
-$string['description'] = 'Description';
 $string['drop_registration'] = 'Supprimer les évènements eux-mêmes';
 $string['duedate'] = 'Date de l\'évènement';
 $string['early'] = "\$a avant la date";

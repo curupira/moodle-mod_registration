@@ -26,7 +26,7 @@
 
 $module->version  = 2012071101;
 $module->release  = 'v1.4.2';    // human-friendly version name
-$module->requires = 2007101509;  // Requires this Moodle version
+$module->requires = 2012062501;  // Requires this Moodle version
 $module->cron     = 60;
 
 ?>

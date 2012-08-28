@@ -22,26 +22,30 @@ function registration_add_instance($registration) {
 // will create a new instance and return the id number 
 // of the new instance.
 
-    global $CFG;
+  global $CFG, $DB;
+
+    print_r($registration);
 
     $registration->timemodified = time();
     
+    /*   
     $registration->timedue = make_timestamp($registration->dueyear, $registration->duemonth, $registration->dueday, 
                                           $registration->duehour, $registration->dueminute);
 
     $registration->timeavailable = make_timestamp($registration->availableyear, $registration->availablemonth, $registration->availableday, 
-                                          $registration->availablehour, $registration->availableminute);
+    $registration->availablehour, $registration->availableminute); 
+    */
     $registration->name = strip_tags($registration->name);
     $registration->room = strip_tags($registration->room);
 
     if ($registration->timeavailable > $registration->timedue) 
 	print_error("dateerror", "registration",$CFG->wwwroot."/course/mod.php?id=".$registration->course."&section=".$registration->section."&sesskey=".$registration->sesskey."&add=registration");
 
-    if ($returnid = insert_record("registration", $registration)) {
+    if ($returnid = $DB->insert_record("registration", $registration)) {
 
         $event = NULL;
         $event->name        = $registration->name;
-        $event->description = $registration->description;
+        $event->intro       = $registration->intro;
         $event->courseid    = $registration->course;
         $event->groupid     = 0;
         $event->userid      = 0;
@@ -86,7 +90,7 @@ function registration_update_instance($registration) {
         if ($event->id = get_field('event', 'id', 'modulename', 'registration', 'instance', $registration->id)) {
 
             $event->name        = $registration->name;
-            $event->description = $registration->description;
+            $event->intro = $registration->intro;
             $event->timestart   = $registration->timedue;
             $event->timeavailable = $registration->allowqueue;
 
@@ -147,43 +151,44 @@ function registration_refresh_events($courseid = 0) {
 // If courseid = 0, then every registration event in the site is checked, else
 // only registration events belonging to the course specified are checked.
 // This function is used, in its new format, by restore_refresh_events()
+  global $DB;
 
-    if ($courseid == 0) {
-        if (! $registrations = get_records("registration")) {
-            return true;
-        }
+  if ($courseid == 0) {
+    if (! $registrations = $DB->get_records("registration")) {
+      return true;
+    }
+  } else {
+    if (! $registrations = $DB->get_records("registration",array("course"=>$courseid))) {
+      return true;
+    }
+  }
+  $moduleid = $DB->get_field('modules', 'id',array('name'=>'registration'));
+
+  foreach ($registrations as $registration) {
+    $event = NULL;
+    $event->name        = addslashes($registration->name);
+    $event->intro = addslashes($registration->intro);
+    $event->allowqueue   = $registration->allowqueue;
+    $event->timestart   = $registration->timedue;
+    $event->timeavailable = $registration->timeavailable;
+ 
+    if ($event->id = $DB->get_field('event', 'id', array('modulename'=>'registration', 'instance'=>$registration->id))) {
+      update_event($event);
+
     } else {
-        if (! $registrations = get_records("registration", "course", $courseid)) {
-            return true;
-        }
+      $event->courseid    = $registration->course;
+      $event->groupid     = 0;
+      $event->userid      = 0;
+      $event->modulename  = 'registration';
+      $event->instance    = $registration->id;
+      $event->eventtype   = 'due';
+      $event->timeduration = 0;
+      $event->visible     = $DB->get_field('course_modules', 'visible', array('module'=>$moduleid, 'instance'=>$registration->id));
+      add_event($event);
     }
-    $moduleid = get_field('modules', 'id', 'name', 'registration');
 
-    foreach ($registrations as $registration) {
-        $event = NULL;
-        $event->name        = addslashes($registration->name);
-        $event->description = addslashes($registration->description);
-        $event->allowqueue   = $registration->allowqueue;
-        $event->timestart   = $registration->timedue;
-        $event->timeavailable = $registration->timeavailable;
-
-        if ($event->id = get_field('event', 'id', 'modulename', 'registration', 'instance', $registration->id)) {
-            update_event($event);
-
-        } else {
-            $event->courseid    = $registration->course;
-            $event->groupid     = 0;
-            $event->userid      = 0;
-            $event->modulename  = 'registration';
-            $event->instance    = $registration->id;
-            $event->eventtype   = 'due';
-            $event->timeduration = 0;
-            $event->visible     = get_field('course_modules', 'visible', 'module', $moduleid, 'instance', $registration->id);
-            add_event($event);
-        }
-
-    }
-    return true;
+  }
+  return true;
 }
 
 
@@ -330,16 +335,16 @@ function registration_cron () {
     return true;
 }
 
-function registration_print_recent_activity($course, $isteacher, $timestart) {
-    global $CFG;
+function registration_print_recent_activity($course, $viewfullnames, $timestart) {
+  global $CFG, $DB;
 
     $content = false;
     $registrations = NULL;
 
-    if (!$logs = get_records_select("log", "time > '$timestart' AND ".
+    if (!$logs = $DB->get_records_select("log", "time > '$timestart' AND ".
                                            "course = '$course->id' AND ".
                                            "module = 'registration' AND ".
-                                           "action = 'upload' ", "time ASC")) {
+					 "action = 'upload' ", NULL, "time ASC")) {
         return false;
     }
 
@@ -473,9 +478,9 @@ function registration_log_info($log) {
 
 function registration_count_submissions($registration) {
 /// Return all registration submissions 
-    global $CFG;
+  global $CFG, $DB;
 
-    return count_records_sql("SELECT COUNT(*)
+    return $DB->count_records_sql("SELECT COUNT(*)
                                   FROM {$CFG->prefix}registration_submissions a
                                  WHERE a.registration = '$registration->id' 
                                    AND a.timemodified > 0");
@@ -961,17 +966,17 @@ function registration_delete_course_module($id) {
 }
 
 function registration_get_position_in_list($registration_id,$userid) {
-	global $CFG;
+  global $CFG, $DB;
 
-	$students = get_records("registration_submissions","registration",$registration_id,"id","userid");
-	if (!$students) { return 0; }
-	$i = 0;
-	foreach ($students as $data)
-	{
-	 $i++;
-	 if ($data->userid == $userid) { return $i; }
-	}
-	return 0;
+  $students = $DB->get_records("registration_submissions",array("registration"=>$registration_id),"id","userid");
+  if (!$students) { return 0; }
+  $i = 0;
+  foreach ($students as $data)
+    {
+      $i++;
+      if ($data->userid == $userid) { return $i; }
+    }
+  return 0;
 
 }
 

@@ -1,4 +1,3 @@
-
 <?php
 $string['notefull'] = 'Even if the registration date is fully booked you can still register. You will be queued (marked in red). If someone signs out, the first student in the queue will be moved into registered students and a notification will be sent to him/her by mail.';
 $string['subject'] = 'Change in registration in the course $a->coursename ($a->duedate)';

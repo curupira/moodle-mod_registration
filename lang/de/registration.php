@@ -19,7 +19,6 @@ $string['closed'] = "Terminvergabe beendet";
 $string['datetext'] = "Sie sind für diesen Termin eingetragen"; 
 $string['dateerror'] = "Einschreibedatum ist nach dem Termin!";
 $string['deleteall'] = 'Alles löschen';
-$string['description'] = 'Beschreibung';
 $string['drop_registration'] = 'Terminvergabe komplett löschen';
 $string['duedate'] = 'Termin am';
 $string['early'] = "\$a früher";

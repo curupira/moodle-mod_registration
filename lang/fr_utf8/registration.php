@@ -19,7 +19,6 @@ $string['closed'] = "Les inscriptions sont terminées.";
 $string['datetext'] = "Vous êtes inscrits à l'évènement"; 
 $string['dateerror'] = "Inscription aprés événement";
 $string['deleteall'] = 'Supprimer tout';
-$string['description'] = 'Description';
 $string['drop_registration'] = 'Supprimer les évènements eux-mêmes';
 $string['duedate'] = 'Date de l\'évènement';
 $string['early'] = "\$a avant la date";
