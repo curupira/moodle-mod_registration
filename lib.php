@@ -457,7 +457,7 @@ function registration_scale_used($registrationid,$scaleid) {
  * @return boolean
  */
 function registration_scale_used_anywhere($scaleid) {
-    return record_exists("registration","scale","-$scaleid");
+    return record_exists("registration","grade","-$scaleid");
 }
  
 /// SQL STATEMENTS //////////////////////////////////////////////////////////////////
