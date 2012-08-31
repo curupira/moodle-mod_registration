@@ -1,4 +1,4 @@
-<?PHP // $Id: index.php,v 1.15 2004/08/22 14:38:37 gustav_delius Exp $
+<?PHP
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -54,8 +54,10 @@ $strduedate = get_string("duedate", "registration");
 $stravailabledate = get_string("availabledate", "registration");
 $strsubmitted = get_string("submitted", "registration");
 
-
-print_header_simple($strregistrations, "", $strregistrations, "", "", true, "", navmenu($course));
+$PAGE->set_pagelayout('standard');
+$PAGE->set_title($strregistrations);
+$PAGE->navbar->add($strregistrations, new moodle_url("/mod/registration/index.php?id=".$course->id));
+echo $OUTPUT->header();
 
 if (! $registrations = get_all_instances_in_course("registration", $course)) {
   notice(get_string('noregistrations', 'registration'), "../../course/view.php?id=$course->id");
@@ -64,6 +66,7 @@ if (! $registrations = get_all_instances_in_course("registration", $course)) {
 
 $timenow = time();
 $table = new html_table();
+$table->attributes['style']="margin-left:auto; margin-right:auto;";
 
 if ($course->format == "weeks" && $ismyteacher) 
   {
@@ -167,6 +170,7 @@ echo html_writer::table($table);
 
 echo "<br />";
 $legend = new html_table();
+$legend->attributes['style']="margin-left:auto; margin-right:auto;";
 $legend->head = array( '<div style="color: red; font-weight: bold;">'.get_string("legend","registration").'</div>');
     
 echo html_writer::table($legend);

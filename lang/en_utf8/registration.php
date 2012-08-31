@@ -1,6 +1,5 @@
-
 <?php
-$string['notefull'] = 'Even if the registration date is fully booked you can still register. You will be queued (marked in red). If someone signs out, the first student in the queue will be moved into registered students and a notification will be sent to him/her by mail.';
+$string['notefull'] = 'Even if the registration date is fully booked you can still register. You will be queued. If someone signs out, the first student in the queue will be moved into registered students and a notification will be sent to him/her by mail.';
 $string['subject'] = 'Change in registration in the course $a->coursename ($a->duedate)';
 $string['message'] = 'Change in registration in the course $a->coursename!
 
@@ -17,17 +16,19 @@ $string['availabledate'] = "Registration-Period until";
 $string['booked'] = 'Booked';
 $string['clearall'] = 'Clear all';
 $string['closed'] = "Date is closed";
+$string['confighideidnumber'] = "Don't show ID Number on print form.";
 $string['datetext'] = "You are signed in for date"; 
 $string['dateerror'] = "Registrationperiod is after the Date!";
 $string['deleteall'] = 'Delete all';
 $string['drop_registration'] = 'Drop this registration entirely';
 $string['duedate'] = 'Registration-Date';
-$string['early'] = "\$a early";
+$string['early'] = "{\$a} early";
 $string['feedback'] = "Feedback";
-$string['feedbackupdated'] = "Feedback updated for \$a people";
+$string['feedbackupdated'] = "Feedback updated for {\$a} people";
 $string['full'] = "Date is fully occupied";
+$string['hideidnumber'] = 'Hide ID Number';
 $string['in_queue'] = "in queue";
-$string['late'] = "\$a late";
+$string['late'] = "{\$a} late";
 $string['legend'] = "Attention! From all Dates within one Topic/one Week participants can only choose one out of them.";
 $string['maximumpoints'] = 'Maximum number of points';
 $string['maximumsize'] = 'Maximum number of students';

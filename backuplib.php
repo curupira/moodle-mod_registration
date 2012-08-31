@@ -1,4 +1,4 @@
-<?PHP //$Id: backuplib.php,v 1.1 2003/07/09 04:40:34 moodler Exp $
+<?PHP 
     //This php script contains all the stuff to backup/restore
     //registration mods
 
@@ -24,12 +24,12 @@
     //This function executes all the backup procedure about this mod
     function registration_backup_mods($bf,$preferences) {
 
-        global $CFG;
+      global $CFG, $DB;
 
         $status = true;
 
         //Iterate over registration table
-        $registrations = get_records ("registration","course",$preferences->backup_course,"id");
+        $registrations = $DB->get_records("registration",array('course'->$preferences->backup_course),"id");
         if ($registrations) {
             foreach ($registrations as $registration) {
                 if (backup_mod_selected($preferences,'registration',$registration->id)) {
@@ -43,10 +43,10 @@
 
     function registration_backup_one_mod($bf,$preferences,$registration) {
         
-        global $CFG;
+      global $CFG, $DB;
     
         if (is_numeric($registration)) {
-            $registration = get_record('registration','id',$registration);
+	  $registration = $DB->get_record('registration',array('id'=>$registration));
         }
     
         $status = true;
@@ -94,11 +94,11 @@
     //Backup registration_submissions contents (executed from registration_backup_mods)
     function backup_registration_submissions ($bf,$preferences,$registration) {
 
-        global $CFG;
+      global $CFG, $DB;
 
         $status = true;
 
-        $registration_submissions = get_records("registration_submissions","registration",$registration,"id");
+        $registration_submissions = $DB->get_records("registration_submissions",array('registration'=>$registration),"id");
         //If there is submissions
         if ($registration_submissions) {
             //Write start tag
@@ -112,7 +112,6 @@
                 fwrite ($bf,full_tag("USERID",6,false,$ass_sub->userid));       
                 fwrite ($bf,full_tag("TIMECREATED",6,false,$ass_sub->timecreated));       
                 fwrite ($bf,full_tag("TIMEMODIFIED",6,false,$ass_sub->timemodified));       
-                fwrite ($bf,full_tag("NUMFILES",6,false,$ass_sub->numfiles));       
                 fwrite ($bf,full_tag("GRADE",6,false,$ass_sub->grade));       
                 fwrite ($bf,full_tag("COMMENT",6,false,$ass_sub->comment));       
                 fwrite ($bf,full_tag("TEACHER",6,false,$ass_sub->teacher));       
@@ -242,9 +241,9 @@
     //Returns an array of registrations id 
     function registration_ids ($course) {
 
-        global $CFG;
+      global $CFG, $DB;
 
-        return get_records_sql ("SELECT a.id, a.course
+        return $DB->get_records_sql ("SELECT a.id, a.course
                                  FROM {$CFG->prefix}registration a
                                  WHERE a.course = '$course'");
     }
@@ -252,9 +251,9 @@
     //Returns an array of registration_submissions id
     function registration_submission_ids_by_course ($course) {
 
-        global $CFG;
+      global $CFG, $DB;
 
-        return get_records_sql ("SELECT s.id , s.registration
+        return $DB->get_records_sql ("SELECT s.id , s.registration
                                  FROM {$CFG->prefix}registration_submissions s,
                                       {$CFG->prefix}registration a
                                  WHERE a.course = '$course' AND
@@ -264,9 +263,9 @@
     //Returns an array of registration_submissions id
     function registration_submission_ids_by_instance ($instanceid) {
 
-        global $CFG;
+      global $CFG, $DB;
 
-        return get_records_sql ("SELECT s.id , s.registration
+        return $DB->get_records_sql ("SELECT s.id , s.registration
                                  FROM {$CFG->prefix}registration_submissions s
                                  WHERE s.registration = $instanceid");
     }

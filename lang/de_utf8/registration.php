@@ -1,5 +1,5 @@
 <?php
-$string['notefull'] = 'Auch wenn der Termin ausgebucht ist, können Sie sich noch anmelden. Sie kommen in die Warteschlange (rot markiert). Falls sich jemand abmeldet, rückt der/die Erste der Warteschlange nach und wird per eMail informiert.';
+$string['notefull'] = 'Auch wenn der Termin ausgebucht ist, können Sie sich noch anmelden. Sie kommen in die Warteschlange. Falls sich jemand abmeldet, rückt der/die Erste der Warteschlange nach und wird per eMail informiert.';
 $string['subject'] = 'Aenderung bei den Terminvergaben im Kurs $a->coursename ($a->duedate)';
 $string['message'] = 'Aenderung bei den Terminvergaben im Kurs $a->coursename!
 
@@ -16,17 +16,19 @@ $string['availabledate'] = "Einschreibung bis";
 $string['booked'] = "Gebucht";
 $string['clearall'] = "Alles löschen";
 $string['closed'] = "Terminvergabe beendet";
+$string['confighideidnumber'] = 'ID Number beim Drucken verbergen.';
 $string['datetext'] = "Sie sind für diesen Termin eingetragen"; 
 $string['dateerror'] = "Einschreibedatum ist nach dem Termin!";
 $string['deleteall'] = 'Alles löschen';
 $string['drop_registration'] = 'Terminvergabe komplett löschen';
 $string['duedate'] = 'Termin am';
-$string['early'] = "\$a früher";
+$string['early'] = "{\$a} früher";
 $string['feedback'] = "Bewertung";
-$string['feedbackupdated'] = "Bewertungen aktualisiert für \$a Teilnehmer";
+$string['feedbackupdated'] = "Bewertungen aktualisiert für {\$a} Teilnehmer";
 $string['full'] = "Termin ausgebucht";
+$string['hideidnumber'] = 'ID Number verbergen';
 $string['in_queue'] = "in der Warteliste";
-$string['late'] = "\$a später";
+$string['late'] = "{\$a} später";
 $string['legend'] = "Achtung! Von verschiedenen Terminen innerhalb eines Themas/einer Woche kann von den Teilnehmern jeweils nur ein Termin ausgewählt werden.";
 $string['maximumpoints'] = 'Maximale Punktzahl';
 $string['maximumsize'] = 'Maximale Teilnehmerzahl';

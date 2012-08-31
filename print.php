@@ -22,18 +22,21 @@ $id = optional_param('id', 0, PARAM_INT); // Course Module ID
 $version = optional_param('version', 0, PARAM_INT); // print names?
 //optional_variable($a);// registration ID
 
-if (! $registration = get_record("registration", "id", $id))
+if (! $registration = $DB->get_record("registration", array('id'=>$id)))
         error("Course module is incorrect");
-if (! $course = get_record("course", "id", $registration->course))
+if (! $course = $DB->get_record("course", array('id'=>$registration->course)))
         error("Course is misconfigured");
 if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
         error("Course Module ID was incorrect");
 
 require_course_login($course);
 $context=get_context_instance(CONTEXT_COURSE, $course->id);
-require_capability('mod/registration:view', $context);
+require_capability('mod/registration:viewlist', $context);
 $ismyteacher = has_capability('mod/registration:grade', $context);
 $ismystudent = has_capability('mod/registration:view', $context);
+
+if (!empty($CFG->registration_hide_idnumber))
+  $version = 2;
 
 echo '<html> 
 <head>
@@ -55,58 +58,66 @@ echo '<h1>'.$course->fullname.": ".$strduedate.'</h1>
 <div style="text-align: center; margin: 10px;">'.$registration->name.'</div>
 ';
 
-if($ismyteacher && $version)
-{
-    if ($registration->grade) {
-        $table->head  = array ($strorder, $stridnumber, $strfirstname, $strlastname, $strpoints, $strnote);
-        $table->align = array ("center", "center", "center", "center", "center", "left");
-    }else{
-        $table->head  = array ($strorder, $stridnumber, $strfirstname, $strlastname, $strnote);
-        $table->align = array ("center", "center", "center", "center", "left");
-    }
-}
-elseif($ismyteacher && !$version)
-{
-    if ($registration->grade) {
-        $table->head  = array ($strorder, $stridnumber." / ".$strfirstname." ".$strlastname,  $strpoints, $strnote);
-        $table->align = array ("center", "center", "center", "left");
-    }else{
-        $table->head  = array ($strorder, $stridnumber." / ".$strfirstname." ".$strlastname,  $strnote);
-        $table->align = array ("center", "center", "left");
-    }
-}
-else
-{
-        $table->head  = array ($strorder, $stridnumber." / ".$strfirstname." ".$strlastname, $strnote);
-        $table->align = array ("center", "center", "left");
-}
+$table = new html_table();
+$table->attributes['style']="margin-left:auto; margin-right:auto;";
+
+$table->head[] = $strorder;
+$table->align[] = "center";
+
+if (empty($CFG->registration_hide_idnumber) && $version<2)
+  {
+    $table->head[] = $stridnumber;
+    $table->align[] = "center";
+  }
+
+if ($version>0)
+  {
+    $table->head[] = $strfirstname;
+    $table->head[] = $strlastname;
+  }
+
+if($ismyteacher && $registration->grade)
+  {
+    $table->head[] = $strpoints;
+    $table->align[] = "center";
+  }
+$table->head[] =$strnote;
+$table->align[] = "left";
 
 $grades = make_grades_menu($registration->grade);
 
-$students = get_records("registration_submissions","registration",$cm->instance);
+$students = $DB->get_records("registration_submissions",array('registration'=>$cm->instance));
 $i = 0;
 if (!$students) $students = array();
 foreach ($students as $data)
 {
-        $person = get_record("user","id",$data->userid);
-        $idnumber_name = ($person->idnumber) ? $person->idnumber : $person->firstname." ".$person->lastname;
-        if ($ismyteacher && $version)
-          if ($registration->grade) {
-                $table->data[] = array (++$i, $person->idnumber, $person->firstname, $person->lastname, $grades[$data->grade], $data->comment);
-          }else{
-                $table->data[] = array (++$i, $person->idnumber, $person->firstname, $person->lastname, $data->comment);
-          }
-        elseif ($ismyteacher && !$version)
-          if ($registration->grade) {
-                $table->data[] = array (++$i, $idnumber_name, $grades[$data->grade], $data->comment);
-          }else{
-                $table->data[] = array (++$i, $idnumber_name, $data->comment);
-          }
-        else
-                $table->data[] = array (++$i, $idnumber_name, $data->comment);
+  $person = $DB->get_record("user",array('id'=>$data->userid));
+
+  $line = array();
+  $line[] = ++$i;
+
+  if (empty($CFG->registration_hide_idnumber) && $version<2)
+    {
+      $line[] = $person->idnumber;
+    }
+
+  if ($version>0)
+    {
+      $line[] = $person->firstname;
+      $line[] = $person->lastname;
+    }
+
+  if($ismyteacher && $registration->grade)
+    {
+      $line[] = $grades[$data->grade];
+    }
+  $line[] = $data->comment;
+
+  $table->data[] =$line;
+
 }
 
-print_table($table);
+echo html_writer::table($table);
 
 echo "
 </body>

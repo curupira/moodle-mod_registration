@@ -1,3 +1,11 @@
+2012-10-10    <wendt@math.tu-berlin.de> (2.0 = 2012101000)
+
+	* Upgrade: hopefully everything moodle2.3 conform now
+	
+	* New admin settings: Hide ID number for privacy reasons. Set maximal number of students.
+
+	* New extendend breadcrumbs
+
 2012-07-11    <wendt@math.tu-berlin.de> (1.4.2 = 2012071100)
 
 	* GPL Note added to version.php

@@ -1,4 +1,4 @@
-<?PHP  // $Id: submissions.php,v 1.31 2004/08/21 20:20:53 gustav_delius Exp $
+<?PHP  
 
 require_once("../../config.php");
 require_once("lib.php");
@@ -11,9 +11,9 @@ $timenow = optional_param('timenow', 0, PARAM_INT);
 $timewas = $timenow;
 $timenow = time();
 
-if (! $registration = get_record("registration", "id", $id))
+if (! $registration = $DB->get_record("registration", array('id'=>$id)))
 	error("Course module is incorrect");
-if (! $course = get_record("course", "id", $registration->course))
+if (! $course = $DB->get_record("course", array('id'=>$registration->course)))
 	error("Course is misconfigured");
 if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
 	error("Course Module ID was incorrect");
@@ -21,6 +21,7 @@ if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $c
 require_login($course->id);
 $context=get_context_instance(CONTEXT_COURSE, $course->id);
 require_capability('mod/registration:grade', $context);
+$PAGE->set_pagelayout('incourse');
 $ismyteacher = has_capability('mod/registration:grade', $context);
 
 $strregistrations = get_string("modulenameplural", "registration");
@@ -28,25 +29,29 @@ $strregistration  = get_string("modulename", "registration");
 $strsubmissions = get_string("submissions", "registration");
 $strsaveallfeedback = get_string("saveallfeedback", "registration");
 
-print_header_simple($registration->name, "","<a href=\"index.php?id=$course->id\">$strregistrations</a> -> <a href=\"view.php?a=$registration->id\">$registration->name</a> -> $strsubmissions", "", "", true, update_module_button($cm->id, $course->id, $strregistration), navmenu($course, $cm));
+$PAGE->set_pagelayout('incourse');
+$PAGE->set_title($strregistrations);
+$PAGE->navbar->add($strregistrations, new moodle_url("/mod/registration/index.php?id=".$course->id));
+$PAGE->navbar->add($registration->name, new moodle_url("/mod/registration/view.php?id=".$cm->id));
+echo $OUTPUT->header();
 
 if($submissions = registration_get_all_submissions($registration, $sort, $dir)) {
 
 	/// If data is being submitted, then process it
+
         if ($data = data_submitted()) 
        	{
                	$feedback = array();
                 // Peel out all the data from variable names.
        	        foreach ($data as $key => $val) 
                	{
-                       	if (!in_array($key, array("id", "timenow"))) 
+		  if (!in_array($key, array("id", "timenow", "sort"))) 
                         {
        	                        $type = substr($key,0,1);
                	                $num  = substr($key,1); 
                        	        $feedback[$num][$type] = $val;
                         }
        	        }
-
                	$count = 0;
                 foreach ($feedback as $num => $vals) 
        	        {
@@ -77,7 +82,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
                        	                        // eg for offline registrations
                                	                $newsubmission->timemodified = $timenow;
                                        	}
-                                        if (! update_record("registration_submissions", $newsubmission)) 
+                                        if (! $DB->update_record("registration_submissions", $newsubmission)) 
        	                                        notify(get_string("failedupdatefeedback", "registration", $submission->userid));
                	                        else
                        	                        $count++;
@@ -115,13 +120,13 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
                	{
                         // Current sort
        	                $diricon = $dir == 'ASC' ? 'down' : 'up';
-               	        echo " <img src=\"$CFG->pixpath/t/$diricon.gif\" />";
+               	        echo " <img src=\"$CFG->wwwroot/pix/t/$diricon.gif\" />";
                 }
        	        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         }
        	echo "</p>";
         print_simple_box_end();
-       	print_spacer(8,1);
+	echo $OUTPUT->spacer(array('height'=>8, 'width'=>1));
 
         echo '<form action="submissions.php" method="post">';
        	echo "<center>";
@@ -148,5 +153,5 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
 	echo notify(get_string("nostudentsyet","registration"));
 }
 
-print_footer($course);
+echo $OUTPUT->footer();
 ?>

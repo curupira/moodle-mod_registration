@@ -24,7 +24,7 @@ else
                 error("Course module is incorrect");
   if (! $course = $DB->get_record("course",  array('id'=>$registration->course)))
                 error("Course is misconfigured");
-        if (! $cm = $DB->get_coursemodule_from_instance("registration", $registration->id, $course->id))
+        if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
                 error("Course Module ID was incorrect");
 }
 require_course_login($course);
@@ -54,20 +54,26 @@ $stror = get_string("or", "registration");
 $strlookfor = get_string("lookfor", "registration");
 $strnotefull = get_string("notefull", "registration");
 
-$navigation = "<a href=\"index.php?id=$course->id\">$strregistrations</a> ";
-print_header_simple($strregistrations, "", "$navigation -> $registration->name", "", "", true, update_module_button($cm->id, $course->id, $strregistration), navmenu($course, $cm));
-//print_header_simple(format_string($forum->name), "", "$navigation -> $registration->name", "", "", true, update_module_button($cm->id, $course->id, $strregistration), navmenu($course, $cm));
-
+$PAGE->set_pagelayout('incourse');
+$PAGE->set_title($strregistrations);
+$PAGE->navbar->add($strregistrations, new moodle_url("/mod/registration/index.php?id=".$course->id));
+$PAGE->navbar->add($registration->name);
+echo $OUTPUT->header();
 
 if ($ismyteacher)
 {
+	echo $OUTPUT->update_module_button($cm->id, 'registration');
         // if number of registered students == 0 then do not show menu
         echo '<p align="right">';
 	if(registration_count_submissions($registration))
         {
                 echo '<a href="submissions.php?id='.$registration->id.'">'.get_string("viewsubmissions", "registration").'</a><br>';
-                echo '<a href="print.php?version=0&id='.$registration->id.'">'.get_string("printversionid", "registration").'</a><br>';
-                echo '<a href="print.php?version=1&id='.$registration->id.'">'.get_string("printversionname", "registration").'</a><br>';
+                if (empty($CFG->registration_hide_idnumber)) 
+		  {
+		    echo '<a href="print.php?version=0&id='.$registration->id.'">'.get_string("printversionid", "registration").'</a><br>';
+		    echo '<a href="print.php?version=1&id='.$registration->id.'">'.get_string("printversionidname", "registration").'</a><br>';
+		  }
+                echo '<a href="print.php?version=2&id='.$registration->id.'">'.get_string("printversionname", "registration").'</a><br></p>';
         }
 }
 elseif (!$cm->visible) 
@@ -171,22 +177,35 @@ if ($timedifference_due < 31536000)
 }
 
 $table = new html_table();
+$table->attributes['style']="margin-left:auto; margin-right:auto;";
+
+
+$table->head[] = $strorder;
+$table->align[] = "center";
+
+if (empty($CFG->registration_hide_idnumber))
+  {
+    $table->head[] = $stridnumber;
+    $table->align[] = "center";
+  }
+
+$table->head[] = $strfirstname;
+$table->align[] = "center";
+$table->head[] = $strlastname;
+$table->align[] = "center";
 
 if($ismyteacher)
-{
-  if ($registration->grade) {
-    $table->head = array ($strorder, $stridnumber, $strfirstname, $strlastname, $strpoints, $stranswercancel, $strnote);
-    $table->align = array ("center", "center"    , "center"     , "center"    , "center"  , "center"        , "left");
-  }else{
-    $table->head = array ($strorder, $stridnumber, $strfirstname, $strlastname, $stranswercancel);
-    $table->align = array ("center", "center"    , "center"     , "center"    , "center");
+  {
+    if ($registration->grade) 
+      {
+	$table->head[] = $strpoints;
+	$table->align[] = "center";
+      }
+    $table->head[] = $stranswercancel;
+    $table->align[] = "center";
+    $table->head[] =$strnote;
+    $table->align[] = "left";
   }
-}
-else
-{
-  $table->head = array ($strorder, $stridnumber." / ".$strfirstname." ".$strlastname);
-  $table->align = array ("center", "center", "left");
-}
 
 $scale = make_grades_menu($registration->grade);
 
@@ -208,22 +227,35 @@ foreach ($students as $data)
                 $start = "";
                 $stop = "";
         }
-        if ($ismyteacher)
-        {
-                $cancel_radio = "<input type='radio' name='idstudent_del' value='".$person->id."' />";
-                if($registration->grade)
-                        $table->data[] = array ($start.(++$i).$stop, $start.$person->idnumber.$stop, $start.$person->firstname.$stop, $start.$person->lastname.$stop, $start.$scale[$data->grade], $cancel_radio, $start.$data->comment.$stop);
-                else
-                        $table->data[] = array ($start.(++$i).$stop, $start.$person->idnumber.$stop, $start.$person->firstname.$stop, $start.$person->lastname.$stop, $cancel_radio);
-                $text_assessment = '';
-        }
-        else
-        {
-                $idnumber_name = ($person->idnumber) ? $person->idnumber : $person->firstname." ".$person->lastname;
-                $table->data[] = array ($start.(++$i).$stop, $start.$idnumber_name.$stop);
-                if ($registration->timedue < time() && $USER->id == $data->userid && $registration->grade)
-                        $text_assessment = '<div style="color: #800000; font-weight: bold;">'.get_string("feedback","registration").": ".$scale[$data->grade].'<br />'.get_string("note", "registration").": ".$data->comment."</div>";
-        }
+
+	$line = array();
+	$line[] = $start.(++$i).$stop;
+
+	if (empty($CFG->registration_hide_idnumber))
+	  {
+	    $line[] = $start.$person->idnumber.$stop;
+	  }
+
+	$line[] = $start.$person->firstname.$stop;
+	$line[] = $start.$person->lastname.$stop;
+
+	if($ismyteacher)
+	  {
+	    if ($registration->grade)
+	      {
+		$line[] = $start.$scale[$data->grade].$stop;
+	      }
+	    $line[] = "<input type='radio' name='idstudent_del' value='".$person->id."' />";
+	    $line[] = $start.$data->comment.$stop;
+	    $text_assessment = '';
+	  }
+	else
+	  {
+	    if ($registration->timedue < time() && $USER->id == $data->userid && $registration->grade)
+	      $text_assessment = '<div style="color: #800000; font-weight: bold;">'.get_string("feedback","registration").": ".$scale[$data->grade].'<br />'.get_string("note", "registration").": ".$data->comment."</div>";
+	  }
+	$table->data[] = $line;
+
 }
 if($ismyteacher && isset($table->data)){
   if ($registration->grade) {

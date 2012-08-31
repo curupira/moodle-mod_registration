@@ -1,4 +1,4 @@
-<?PHP  // $Id: lib.php,v 1.68.2.4 2005/04/02 11:24:06 stronk7 Exp $
+<?PHP  
 
 //require_once($CFG->libdir.'/filelib.php');
 //require_once("$CFG->dirroot/files/mimetypes.php");
@@ -21,20 +21,12 @@ function registration_add_instance($registration) {
 // (defined by the form in mod.html) this function 
 // will create a new instance and return the id number 
 // of the new instance.
+// ver2.0
 
   global $CFG, $DB;
 
-    print_r($registration);
-
     $registration->timemodified = time();
     
-    /*   
-    $registration->timedue = make_timestamp($registration->dueyear, $registration->duemonth, $registration->dueday, 
-                                          $registration->duehour, $registration->dueminute);
-
-    $registration->timeavailable = make_timestamp($registration->availableyear, $registration->availablemonth, $registration->availableday, 
-    $registration->availablehour, $registration->availableminute); 
-    */
     $registration->name = strip_tags($registration->name);
     $registration->room = strip_tags($registration->room);
 
@@ -68,26 +60,25 @@ function registration_update_instance($registration) {
 // Given an object containing all the necessary data, 
 // (defined by the form in mod.html) this function 
 // will update an existing instance with new data.
+// ver2.0
 
-    global $CFG;
+  global $CFG, $DB;
 
     $registration->timemodified = time();
-    $registration->timedue = make_timestamp($registration->dueyear, $registration->duemonth, $registration->dueday, 
-                                          $registration->duehour, $registration->dueminute);
-    $registration->timeavailable = make_timestamp($registration->availableyear, $registration->availablemonth, $registration->availableday, 
-                                          $registration->availablehour, $registration->availableminute);
+
+    $registration->name = strip_tags($registration->name);
+    $registration->room = strip_tags($registration->room);
+
     if ($registration->timeavailable > $registration->timedue) 
 	print_error("dateerror", "registration",$CFG->wwwroot."/course/mod.php?update=".$registration->coursemodule."&return=true&sesskey=".$registration->sesskey);
     $registration->id = $registration->instance;
     $registration->allowqueue = !empty($registration->allowqueue);
-    $registration->name = strip_tags($registration->name);
-    $registration->room = strip_tags($registration->room);
 
-    if ($returnid = update_record("registration", $registration)) {
+    if ($returnid = $DB->update_record("registration", $registration)) {
 
         $event = NULL;
 
-        if ($event->id = get_field('event', 'id', 'modulename', 'registration', 'instance', $registration->id)) {
+        if ($event->id = $DB->get_field('event', 'id', array('modulename'=>'registration', 'instance'=>$registration->id))) {
 
             $event->name        = $registration->name;
             $event->intro = $registration->intro;
@@ -106,22 +97,25 @@ function registration_delete_instance($id) {
 // Given an ID of an instance of this module, 
 // this function will permanently delete the instance 
 // and any data that depends on it.  
+// ver2.0
 
-    if (! $registration = get_record("registration", "id", "$id")) {
+  global $DB;
+
+  if (! $registration = $DB->get_record("registration", array('id'=>$id))) {
         return false;
     }
 
     $result = true;
 
-    if (! delete_records("registration_submissions", "registration", "$registration->id")) {
+    if (! $DB->delete_records("registration_submissions", array('registration'=> $registration->id))) {
         $result = false;
     }
 
-    if (! delete_records("registration", "id", "$registration->id")) {
+    if (! $DB->delete_records("registration", array('id'=>$registration->id))) {
         $result = false;
     }
 
-    if (! delete_records('event', 'modulename', 'registration', 'instance', $registration->id)) {
+    if (! $DB->delete_records('event',array('modulename'=>'registration', 'instance'=>$registration->id))) {
         $result = false;
     }
 
@@ -132,13 +126,15 @@ function registration_delete_submission_instance($id) {
 // Given an ID of an instance of this module, 
 // this function will permanently clear the data of the instance 
 
-    if (! $registration = get_record("registration", "id", "$id")) {
+  global $DB;
+
+  if (! $registration = $DB->get_record("registration", array('id'=>$id))) {
         return false;
     }
 
     $result = true;
 
-    if (! delete_records("registration_submissions", "registration", "$registration->id")) {
+    if (! $DB->delete_records("registration_submissions", array('registration' => $registration->id))) {
         $result = false;
     }
 
@@ -151,6 +147,7 @@ function registration_refresh_events($courseid = 0) {
 // If courseid = 0, then every registration event in the site is checked, else
 // only registration events belonging to the course specified are checked.
 // This function is used, in its new format, by restore_refresh_events()
+
   global $DB;
 
   if ($courseid == 0) {
@@ -244,7 +241,7 @@ function registration_cron () {
 // Function to be run periodically according to the moodle cron
 // Finds all registration notifications that have yet to be mailed out, and mails them
 
-    global $CFG, $USER;
+    global $CFG, $DB, $USER;
 
     /// Notices older than 1 day will not be mailed.  This is to avoid the problem where
     /// cron has not been running for a long time, and then suddenly people are flooded
@@ -269,14 +266,14 @@ function registration_cron () {
 
             echo "Processing registration submission $submission->id\n";
 
-            if (! $user = get_record("user", "id", "$submission->userid")) {
+            if (! $user = $DB->get_record("user", array('id'=>$submission->userid))) {
                 echo "Could not find user $post->userid\n";
                 continue;
             }
 
             $USER->lang = $user->lang;
 
-            if (! $course = get_record("course", "id", "$submission->course")) {
+            if (! $course = $DB->get_record("course", array('id'=>$submission->course))) {
                 echo "Could not find course $submission->course\n";
                 continue;
             }
@@ -286,7 +283,7 @@ function registration_cron () {
                 continue;
             }
 
-            if (! $teacher = get_record("user", "id", "$submission->teacher")) {
+            if (! $teacher = $DB->get_record("user", array('id'=>$submission->teacher))) {
                 echo "Could not find teacher $submission->teacher\n";
                 continue;
             }
@@ -383,11 +380,11 @@ function registration_grades($registrationid) {
 /// Must return an array of grades, indexed by user, and a max grade.
 
 
-    if (!$registration = get_record("registration", "id", $registrationid)) {
+  if (!$registration = $DB->get_record("registration", array('id'=>$registrationid))) {
         return NULL;
     }
 
-    $grades = get_records_menu("registration_submissions", "registration", 
+    $grades = $DB->get_records_menu("registration_submissions", "registration", 
                                $registration->id, "", "userid,grade");
 
     if ($registration->grade >= 0) {
@@ -396,7 +393,7 @@ function registration_grades($registrationid) {
 
     } else {
         $scaleid = - ($registration->grade);
-        if ($scale = get_record("scale", "id", $scaleid)) {
+        if ($scale = $DB->get_record("scale", array('id'=>$scaleid))) {
             $scalegrades = make_menu_from_list($scale->scale);
             if ($grades) {
                 foreach ($grades as $key => $grade) {
@@ -419,13 +416,13 @@ function registration_get_participants($registrationid) {
     global $CFG;
 
     //Get students
-    $students = get_records_sql("SELECT DISTINCT u.*
+    $students = $DB->get_records_sql("SELECT DISTINCT u.*
                                  FROM {$CFG->prefix}user u,
                                       {$CFG->prefix}registration_submissions a
                                  WHERE a.registration = '$registrationid' and
                                        u.id = a.userid");
     //Get teachers
-    //    $teachers = get_records_sql("SELECT DISTINCT u.*
+    //    $teachers = $DB->get_records_sql("SELECT DISTINCT u.*
     //                                 FROM {$CFG->prefix}user u,
     //                                      {$CFG->prefix}registration_submissions a
     //                                 WHERE a.registration = '$registrationid' and
@@ -446,7 +443,7 @@ function registration_scale_used($registrationid,$scaleid) {
 
     $return = false;
 
-    $rec = get_record("registration","id","$registrationid","grade","-$scaleid");
+    $rec = $DB->get_record("registration",array('id'=>$registrationid,'grade'=> -$scaleid));
 
     if (!empty($rec) && !empty($scaleid)) {
         $return = true;
@@ -462,14 +459,15 @@ function registration_scale_used($registrationid,$scaleid) {
  * @return boolean
  */
 function registration_scale_used_anywhere($scaleid) {
-    return record_exists("registration","scale","-$scaleid");
+  global $DB;
+  return $DB->record_exists("registration",array('grade'=> -$scaleid ));
 }
  
 /// SQL STATEMENTS //////////////////////////////////////////////////////////////////
 
 function registration_log_info($log) {
     global $CFG;
-    return get_record_sql("SELECT a.name, u.firstname, u.lastname
+    return $DB->get_record_sql("SELECT a.name, u.firstname, u.lastname
                              FROM {$CFG->prefix}registration a, 
                                   {$CFG->prefix}user u
                             WHERE a.id = '$log->info' 
@@ -488,7 +486,7 @@ function registration_count_submissions($registration) {
 
 function registration_get_all_submissions($registration, $sort="", $dir="DESC") {
 /// Return all registration submissions by ENROLLED students (even empty)
-    global $CFG;
+  global $CFG, $DB;
 
     if ($sort == "lastname" or $sort == "firstname") {
         $sort = "u.$sort $dir";
@@ -503,7 +501,7 @@ function registration_get_all_submissions($registration, $sort="", $dir="DESC") 
     if ($registration->course == $site->id) {
         $select = '';
     }
-    return get_records_sql("SELECT a.* 
+    return $DB->get_records_sql("SELECT a.* 
                               FROM {$CFG->prefix}registration_submissions a, 
                                    {$CFG->prefix}registration s,
                                    {$CFG->prefix}user u
@@ -511,7 +509,7 @@ function registration_get_all_submissions($registration, $sort="", $dir="DESC") 
                                AND $select a.registration = '$registration->id' 
                           ORDER BY $sort");
     /*
-    return get_records_sql("SELECT a.* 
+    return $DB->get_records_sql("SELECT a.* 
                               FROM {$CFG->prefix}registration_submissions a, 
                                    {$CFG->prefix}user_students s,
                                    {$CFG->prefix}user u
@@ -531,14 +529,14 @@ function registration_get_users_done($registration) {
     if ($registration->course == $site->id) {
         $select = '';
     }
-    return get_records_sql("SELECT u.* 
+    return $DB->get_records_sql("SELECT u.* 
                               FROM {$CFG->prefix}user u, 
                                    {$CFG->prefix}registration s,
                                    {$CFG->prefix}registration_submissions a
                              WHERE $select u.id = a.userid 
                                AND a.registration = '$registration->id'
                           ORDER BY a.timemodified DESC");
-    /*    return get_records_sql("SELECT u.* 
+    /*    return $DB->get_records_sql("SELECT u.* 
                               FROM {$CFG->prefix}user u, 
                                    {$CFG->prefix}user_students s, 
                                    {$CFG->prefix}registration_submissions a
@@ -552,14 +550,14 @@ function registration_get_users_done($registration) {
 function registration_get_unmailed_submissions($starttime, $endtime) {
 /// Return list of marked submissions that have not been mailed out for currently enrolled students
     global $CFG;
-    return get_records_sql("SELECT s.*, a.course, a.name
+    return $DB->get_records_sql("SELECT s.*, a.course, a.name
                               FROM {$CFG->prefix}registration_submissions s, 
                                    {$CFG->prefix}registration a,
                              WHERE s.mailed = 0 
                                AND s.timemarked <= $endtime 
                                AND s.timemarked >= $starttime
                                AND s.registration = a.id");
-    /*    return get_records_sql("SELECT s.*, a.course, a.name
+    /*    return $DB->get_records_sql("SELECT s.*, a.course, a.name
                               FROM {$CFG->prefix}registration_submissions s, 
                                    {$CFG->prefix}registration a,
                                    {$CFG->prefix}user_students us
@@ -587,7 +585,8 @@ function registration_file_area($registration, $user) {
 }
 
 function registration_get_submission($registration, $user) {
-    $submission = get_record("registration_submissions", "registration", $registration->id, "userid", $user->id);
+  global $DB;
+  $submission = $DB->get_record("registration_submissions", array('registration'=>$registration->id, 'userid'=>$user->id));
     if (!empty($submission->timemodified)) {
         return $submission;
     }
@@ -605,13 +604,13 @@ function registration_print_difference($time) {
 }
 
 function registration_print_submission($registration, $user, $submission, $grades) {
-    global $THEME, $USER;
+  global $THEME, $OUTPUT, $USER;
 
     echo "\n<TABLE BORDER=1 CELLSPACING=0 valign=top cellpadding=10 align=center>";
 
     echo "\n<TR>";
     echo "\n<TD ROWSPAN=2 WIDTH=35 VALIGN=TOP>";
-    print_user_picture($user->id, $registration->course, $user->picture);
+    echo $OUTPUT->user_picture($user, array('popup'=>true));
     echo "</TD>";
     echo "<TD NOWRAP>".fullname($user, true);
     if ($submission->timemodified) {
@@ -644,7 +643,8 @@ function registration_print_submission($registration, $user, $submission, $grade
         $submission->grade = -1;   /// Hack to stop zero being selected on the menu below (so it shows 'no grade')
     }
     echo get_string("feedback", "registration").":";
-    choose_from_menu($grades, "g$submission->id", $submission->grade, get_string("nograde"));
+    echo html_writer::select($grades, "g$submission->id", $submission->grade, get_string("nograde"));
+    //    choose_from_menu($grades, "g$submission->id", $submission->grade, get_string("nograde"));
     if ($submission->timemarked) {
         echo "&nbsp;&nbsp;<FONT SIZE=1>".userdate($submission->timemarked)."</FONT>";
     }
@@ -657,9 +657,9 @@ function registration_print_submission($registration, $user, $submission, $grade
 }
 
 function registration_print_feedback($course, $submission, $registration) {
-    global $CFG, $THEME, $RATING;
+    global $CFG, $DB, $THEME, $RATING;
 
-    if (! $teacher = get_record("user", "id", $submission->teacher)) {
+    if (! $teacher = $DB->get_record("user", array('id'=>$submission->teacher))) {
         error("Weird registration error");
     }
 
@@ -763,7 +763,7 @@ function registration_get_recent_mod_activity(&$activities, &$index, $sincetime,
         $userselect = "";
     }
 
-    $registrations = get_records_sql("SELECT asub.*, u.firstname, u.lastname, u.picture, u.id as userid,
+    $registrations = $DB->get_records_sql("SELECT asub.*, u.firstname, u.lastname, u.picture, u.id as userid,
                                            a.grade as maxgrade, name, cm.instance, cm.section, a.type
                                   FROM {$CFG->prefix}registration_submissions asub,
                                        {$CFG->prefix}user u,
@@ -896,7 +896,7 @@ function registration_delete_userdata($data, $showregistration=true) {
    $status = array();
 
    // Get the course's registrations
-   $cr = get_records('registration', 'course', $data->courseid);
+   $cr = $DB->get_records('registration', array('course'=>$data->courseid));
 
         // If you need to clean something
         if (!empty($data->reset_registration_all) || !empty($data->drop_registration_all)) {
@@ -947,7 +947,7 @@ function registration_reset_course_form_defaults($course) {
 // Called by course/reset.php and shows the formdata by coursereset
 function registration_reset_course_form($course) {
    echo get_string('registrationsreset', 'registration'); echo ':<br />';
-   if(!$registrations = get_records('registration', 'course', $course->id, 'name'))return;
+   if(!$registrations = $DB->get_records('registration', array('course'=>$course->id), 'name')) return;
    
    foreach($registrations as $registration) {
       echo '<p>';
@@ -959,10 +959,11 @@ function registration_reset_course_form($course) {
 }
 
 function registration_delete_course_module($id) {
-   if (!$cm = get_record('course_modules', 'id', $id)) {
-      return true;
-   }
-   return delete_records('course_modules', 'id', $cm->id);
+  global $DB;
+  if (!$cm = $DB->get_record('course_modules', 'id', $id)) {
+    return true;
+  }
+  return $DB->delete_records('course_modules', array('id'=>$cm->id));
 }
 
 function registration_get_position_in_list($registration_id,$userid) {
