@@ -981,4 +981,20 @@ function registration_get_position_in_list($registration_id,$userid) {
 
 }
 
+function registration_supports($feature) {
+  switch($feature) {
+  case FEATURE_GROUPS:                  return false;
+  case FEATURE_GROUPINGS:               return false;
+  case FEATURE_GROUPMEMBERSONLY:        return false;
+  case FEATURE_MOD_INTRO:               return true;
+  case FEATURE_GRADE_HAS_GRADE:         return true;
+  case FEATURE_GRADE_OUTCOMES:          return false;
+  case FEATURE_BACKUP_MOODLE2:          return true;
+  case FEATURE_SHOW_DESCRIPTION:        return true;
+
+  default: return null;
+  }
+}
+
+
 ?>
