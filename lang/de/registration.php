@@ -42,6 +42,7 @@ $string['nostudentsyet'] = "Es haben sich bisher keine Teilnehmer eingetragen.";
 $string['notsubmittedyet'] = "Not yet evaluated";
 $string['order'] = "lf. Nr."; 
 $string['place'] = 'Raum';
+$string['pluginname'] = "Terminvergabe";
 $string['points'] = 'Bewertung';
 $string['pointsplural'] = 'Bewertung';
 $string['printversionid'] = 'Druckversion: nur mit ID';

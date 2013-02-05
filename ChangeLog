@@ -1,3 +1,9 @@
+2013-02-05    <wendt@math.tu-berlin.de> (2.0.0 = 2013012301)
+
+	* Final adaptions for Moodle 2. Should be Moodle 2 conform now
+
+	* Bug fixed: Deleted user will be noticed
+
 2012-10-10    <wendt@math.tu-berlin.de> (2.0 = 2012101000)
 
 	* Upgrade: hopefully everything moodle2.3 conform now

@@ -1,5 +1,13 @@
 Registration mod - register for dates
 
+Features 2.0.0 (Marc-Robin Wendt)
+
+Tested with Moodle 2.4 (January 23, 2013)
+
+* Deleted users should be noticed
+
+* Administration options for ID-Number and max. count of students per registration
+
 Features 1.4 (Marc-Robin Wendt)
 
 Tested with Moodle 1.9.13 (August 1, 2011)
