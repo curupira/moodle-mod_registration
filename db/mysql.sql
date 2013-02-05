@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `prefix_registration` (
   `course` bigint(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `intro` text NOT NULL,
+  `intorformat` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `number` mediumint(5) unsigned NOT NULL DEFAULT '0',
   `room` varchar(30) NOT NULL DEFAULT '',
   `timedue` bigint(10) unsigned NOT NULL DEFAULT '0',

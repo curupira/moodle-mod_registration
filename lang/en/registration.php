@@ -42,6 +42,7 @@ $string['nostudentsyet'] = "There are no students yet.";
 $string['notsubmittedyet'] = "Not yet evaluated";
 $string['order'] = "Order"; 
 $string['place'] = 'Room';
+$string['pluginname'] = 'registration';
 $string['points'] = 'Points';
 $string['pointsplural'] = 'Points';
 $string['printversionid'] = 'Print version: just ID';
