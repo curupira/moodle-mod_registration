@@ -35,7 +35,7 @@ function registration_add_instance($registration) {
 
     if ($returnid = $DB->insert_record("registration", $registration)) {
 
-        $event = NULL;
+        $event = new stdClass();
         $event->name        = $registration->name;
         $event->intro       = $registration->intro;
         $event->courseid    = $registration->course;
@@ -76,7 +76,7 @@ function registration_update_instance($registration) {
 
     if ($returnid = $DB->update_record("registration", $registration)) {
 
-        $event = NULL;
+        $event = new stdClass();
 
         if ($event->id = $DB->get_field('event', 'id', array('modulename'=>'registration', 'instance'=>$registration->id))) {
 
@@ -162,7 +162,7 @@ function registration_refresh_events($courseid = 0) {
   $moduleid = $DB->get_field('modules', 'id',array('name'=>'registration'));
 
   foreach ($registrations as $registration) {
-    $event = NULL;
+    $event = new stdClass();
     $event->name        = addslashes($registration->name);
     $event->intro = addslashes($registration->intro);
     $event->allowqueue   = $registration->allowqueue;
@@ -502,22 +502,11 @@ function registration_get_all_submissions($registration, $sort="", $dir="DESC") 
         $select = '';
     }
     return $DB->get_records_sql("SELECT a.* 
-                              FROM {$CFG->prefix}registration_submissions a, 
-                                   {$CFG->prefix}registration s,
-                                   {$CFG->prefix}user u
-                             WHERE u.id = a.userid
-                               AND $select a.registration = '$registration->id' 
+                              FROM {$CFG->prefix}registration_submissions a
+                              LEFT JOIN {$CFG->prefix}registration s ON s.id=a.registration
+                              LEFT JOIN {$CFG->prefix}user u ON u.id = a.userid
+                              WHERE $select a.registration = '$registration->id' 
                           ORDER BY $sort");
-    /*
-    return $DB->get_records_sql("SELECT a.* 
-                              FROM {$CFG->prefix}registration_submissions a, 
-                                   {$CFG->prefix}user_students s,
-                                   {$CFG->prefix}user u
-                             WHERE a.userid = s.userid
-                               AND u.id = a.userid
-                               AND $select a.registration = '$registration->id' 
-                          ORDER BY $sort");
-    */
 }
 
 function registration_get_users_done($registration) {
@@ -660,7 +649,7 @@ function registration_print_feedback($course, $submission, $registration) {
     global $CFG, $DB, $THEME, $RATING;
 
     if (! $teacher = $DB->get_record("user", array('id'=>$submission->teacher))) {
-        error("Weird registration error");
+      print_error("weirderror","registration");
     }
 
     echo "\n<TABLE BORDER=0 CELLPADDING=1 CELLSPACING=1 ALIGN=CENTER><TR><TD BGCOLOR=#888888>";

@@ -55,5 +55,6 @@ $string['reset_data'] = 'Nutzerdaten zurücksetzen';
 $string['saveallfeedback'] = "Alle Ergebnisse speichern";
 $string['submissions'] = 'Ergebnisse';
 $string['submitted'] = 'Angemeldet'; 
+$string['userdeleted'] = 'Nutzer im System gelöscht.';
 $string['viewsubmissions'] = 'Ergebnisse eintragen';
 ?>

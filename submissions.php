@@ -12,11 +12,11 @@ $timewas = $timenow;
 $timenow = time();
 
 if (! $registration = $DB->get_record("registration", array('id'=>$id)))
-	error("Course module is incorrect");
+  print_error("courseincorrect","registration");
 if (! $course = $DB->get_record("course", array('id'=>$registration->course)))
-	error("Course is misconfigured");
+  print_error("coursemisconfigured","registration");
 if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
-	error("Course Module ID was incorrect");
+  print_error("courseidincorrect","registration");
 
 require_login($course->id);
 $context=get_context_instance(CONTEXT_COURSE, $course->id);
@@ -29,6 +29,8 @@ $strregistration  = get_string("modulename", "registration");
 $strsubmissions = get_string("submissions", "registration");
 $strsaveallfeedback = get_string("saveallfeedback", "registration");
 
+$url = new moodle_url('/mod/registration/submissions.php', array('id'=>$registration->id));
+$PAGE->set_url($url);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title($strregistrations);
 $PAGE->navbar->add($strregistrations, new moodle_url("/mod/registration/index.php?id=".$course->id));
@@ -60,6 +62,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
                         if (($vals['g'] <> $submission->grade) || ($vals['c'] <> addslashes($submission->comment))) 
        	                {
                	                unset($newsubmission);
+				$newsubmission = new stdClass();
                        	        $newsubmission->grade = $vals['g'];
                                	$newsubmission->comment = $vals['c'];
                                 $newsubmission->teacher = $USER->id;
@@ -99,7 +102,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
         // Submission sorting
        	$sorttypes = array('firstname', 'lastname', 'timemodified', 'grade');
 
-        print_simple_box_start("center", "80%");
+	echo $OUTPUT->box_start();
        	echo '<p align="center">'.get_string('order').':&nbsp;&nbsp;';
 
         foreach ($sorttypes as $sorttype) 
@@ -125,7 +128,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
        	        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         }
        	echo "</p>";
-        print_simple_box_end();
+	echo $OUTPUT->box_end();
 	echo $OUTPUT->spacer(array('height'=>8, 'width'=>1));
 
         echo '<form action="submissions.php" method="post">';
@@ -137,7 +140,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
 
        	foreach ($submissions as $submission)
         {
-       	        $user = get_complete_user_data('id', $submission->userid);
+	  if ($user = get_complete_user_data('id', $submission->userid))
 		registration_print_submission($registration, $user, $submission, $grades);
         }
 

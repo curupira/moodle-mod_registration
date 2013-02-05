@@ -12,20 +12,20 @@ $a = optional_param('a', 0, PARAM_INT); // registration ID
 if ($id) 
 {
   if (! $cm = $DB->get_record("course_modules", array('id'=>$id)))
-                error("Course Module ID was incorrect");
+    print_error("courseidincorrect","registration");
   if (! $course = $DB->get_record("course",  array('id'=>$cm->course)))
-                error("Course is misconfigured");
+    print_error("coursemisconfigured","registration");
   if (! $registration = $DB->get_record("registration",  array('id'=>$cm->instance)))
-                error("Course module is incorrect");
+    print_error("courseincorrect","registration");
 } 
 else 
 {
   if (! $registration = $DB->get_record("registration",  array('id'=>$a)))
-                error("Course module is incorrect");
+    print_error("courseincorrect","registration");
   if (! $course = $DB->get_record("course",  array('id'=>$registration->course)))
-                error("Course is misconfigured");
-        if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
-                error("Course Module ID was incorrect");
+    print_error("coursemisconfigured","registration");
+  if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
+    print_error("courseidincorrect","registration");
 }
 require_course_login($course);
 $context=get_context_instance(CONTEXT_COURSE, $course->id);
@@ -54,6 +54,8 @@ $stror = get_string("or", "registration");
 $strlookfor = get_string("lookfor", "registration");
 $strnotefull = get_string("notefull", "registration");
 
+$url = new moodle_url('/mod/registration/view.php', array('id'=>$registration->id));
+$PAGE->set_url($url);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_title($strregistrations);
 $PAGE->navbar->add($strregistrations, new moodle_url("/mod/registration/index.php?id=".$course->id));
@@ -85,6 +87,7 @@ if ($form = data_submitted())
         if ($form->answer == addslashes($stranswer))
         {
                 $timenow = time();
+		$newanswer = new stdClass();
                 $newanswer->timecreated = $timenow;
                 $newanswer->timemodified = $timenow;
                 $newanswer->registration = $registration->id;
@@ -102,7 +105,7 @@ if ($form = data_submitted())
                 if (!$result->userid && ((count($num_students) < $registration->number) || $registration->allowqueue))
                 {
                   if (! $DB->insert_record("registration_submissions", $newanswer)) 
-                        error("Could not save your choice");
+		    print_error("errorchoice","registration");
                   add_to_log($course->id, "registration", "subscribe", "view.php?id=$cm->id", $USER->id, $cm->id, $USER->id);
                   redirect("view.php?id=$cm->id","",0);
                   exit;
@@ -127,7 +130,7 @@ if ($form = data_submitted())
                                 $user_id = $pole[$value->number+1];
                 }
                 if (! $DB->delete_records("registration_submissions",array("userid"=>$user_delete, "registration"=>$cm->instance)))
-                        error("Could not save your choice");
+		  print_error("errorchoice","registration");
                 else
                 {
                         if($user_id)
@@ -149,8 +152,8 @@ if ($form = data_submitted())
         }
 }
 
-print_simple_box_start("center");
 echo $OUTPUT->heading($registration->name);
+echo $OUTPUT->box_start();
 
 $timedifference_due = $registration->timedue - time();
 $timedifference_avail = $registration->timeavailable - time();
@@ -247,6 +250,8 @@ foreach ($students as $data)
 	      }
 	    $line[] = "<input type='radio' name='idstudent_del' value='".$person->id."' />";
 	    $line[] = $start.$data->comment.$stop;
+	    if ($person->deleted)
+	      $line[] = $start.get_string("userdeleted","registration").$stop;
 	    $text_assessment = '';
 	  }
 	else
@@ -364,12 +369,11 @@ echo "<input type='hidden' name='action' value='1'>\n";
 if (has_capability('mod/registration:viewlist', $context))
 {
   echo html_writer::table($table);
-  //	print_table($table);
   echo "</form>\n";
 
   echo format_text($registration->intro);
 }
-print_simple_box_end();
+echo $OUTPUT->box_end();
 
 if ($ismyteacher)
 {
@@ -421,7 +425,7 @@ if ($ismyteacher)
                                 $table1->data[] = array ("", "", "<input type='submit' name='answer' value='".$stranswer."'>");
                 }
         }
-        print_simple_box_start("center");
+	echo $OUTPUT->box_start();
 	$table2 = new html_table();
         $table2->head = array ($strfirstname." <span style='font-weight: normal;'>".$stror."</span> ".$strlastname ." <span style='font-weight: normal;'>".$stror."</span> %");
         $table2->align = array ("left");
@@ -430,12 +434,11 @@ if ($ismyteacher)
         echo "<input type='hidden' name='id' value='".$id."'>\n";
         echo "<input type='hidden' name='action' value='1'>\n";
 	html_writer::table($table2);
-	//        print_table($table2);
         if($result) 
 	  html_writer::table($table1);
-	// print_table($table1);
         echo "</form>\n";
-        print_simple_box_end();
+	echo $OUTPUT->box_end();
+
 }
 echo $OUTPUT->footer();
 ?>

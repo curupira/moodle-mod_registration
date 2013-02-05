@@ -79,13 +79,12 @@ class restore_registration_activity_task extends restore_activity_task {
     static public function define_restore_log_rules() {
         $rules = array();
 
-	/*        $rules[] = new restore_log_rule('registration', 'add', 'view.php?id={course_module}', '{registration}');
+	$rules[] = new restore_log_rule('registration', 'add', 'view.php?id={course_module}', '{registration}');
         $rules[] = new restore_log_rule('registration', 'update', 'view.php?id={course_module}', '{registration}');
         $rules[] = new restore_log_rule('registration', 'view', 'view.php?id={course_module}', '{registration}');
         $rules[] = new restore_log_rule('registration', 'choose', 'view.php?id={course_module}', '{registration}');
         $rules[] = new restore_log_rule('registration', 'choose again', 'view.php?id={course_module}', '{registration}');
         $rules[] = new restore_log_rule('registration', 'report', 'report.php?id={course_module}', '{registration}');
-	*/
 
         return $rules;
     }

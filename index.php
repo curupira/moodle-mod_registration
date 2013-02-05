@@ -34,7 +34,7 @@ $id = required_param('id', PARAM_INT);           // Course Module ID
 //    require_variable($id);   // course
 
 if (! $course = $DB->get_record("course", array("id"=>$id))) {
-  error("Course ID is incorrect");
+  print_error("courseidincorrect","registration");
 }
 
 require_course_login($course);
@@ -54,6 +54,8 @@ $strduedate = get_string("duedate", "registration");
 $stravailabledate = get_string("availabledate", "registration");
 $strsubmitted = get_string("submitted", "registration");
 
+$url = new moodle_url('/mod/registration/index.php', array('id'=>$course->id));
+$PAGE->set_url($url);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title($strregistrations);
 $PAGE->navbar->add($strregistrations, new moodle_url("/mod/registration/index.php?id=".$course->id));

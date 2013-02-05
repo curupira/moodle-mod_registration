@@ -11,15 +11,15 @@
     }
 
     if (! $registration = get_record("registration", "id", $id)) {
-        error("Not a valid registration ID");
+      print_error("invalidregid","registration");
     }
 
     if (! $course = get_record("course", "id", $registration->course)) {
-        error("Course is misconfigured");
+      print_error("coursemisconfigured","registration");
     }
 
     if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id)) {
-        error("Course Module ID was incorrect");
+      print_error("courseidincorrect","registration");
     }
 
     require_login($course->id);
@@ -37,12 +37,12 @@
 
     if ($submission = get_record("registration_submissions", "registration", $registration->id, "userid", $USER->id)) {
         if ($submission->grade and !$registration->resubmit) {
-            error("You've already been graded - there's no point in uploading anything");
+	  print_error("alreadygraded","registration");
         }
     }
 
     if (! $dir = registration_file_area($registration, $USER)) {
-        error("Sorry, an error in the system prevents you from uploading files: contact your teacher or system administrator");
+      print_error("systemuploadfail","registration");
     }
 
     if (empty($newfile)) {

@@ -23,11 +23,11 @@ $version = optional_param('version', 0, PARAM_INT); // print names?
 //optional_variable($a);// registration ID
 
 if (! $registration = $DB->get_record("registration", array('id'=>$id)))
-        error("Course module is incorrect");
+  print_error("courseincorrect","registration");
 if (! $course = $DB->get_record("course", array('id'=>$registration->course)))
-        error("Course is misconfigured");
+  print_error("coursemisconfigured","registration");
 if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
-        error("Course Module ID was incorrect");
+  print_error("courseidincorrect","registration");
 
 require_course_login($course);
 $context=get_context_instance(CONTEXT_COURSE, $course->id);
