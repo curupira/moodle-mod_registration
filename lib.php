@@ -379,6 +379,7 @@ function registration_print_recent_activity($course, $viewfullnames, $timestart)
 function registration_grades($registrationid) {
 /// Must return an array of grades, indexed by user, and a max grade.
 
+  global $DB;
 
   if (!$registration = $DB->get_record("registration", array('id'=>$registrationid))) {
         return NULL;
@@ -413,7 +414,7 @@ function registration_get_participants($registrationid) {
 //(users with records in registration_submissions, students)
 ////(users with records in registration_submissions, students and teachers)
 
-    global $CFG;
+    global $CFG, $DB;
 
     //Get students
     $students = $DB->get_records_sql("SELECT DISTINCT u.*
@@ -441,6 +442,8 @@ function registration_get_participants($registrationid) {
 function registration_scale_used($registrationid,$scaleid) {
 //This function returns if a scale is being used by one registration
 
+    global $DB;
+
     $return = false;
 
     $rec = $DB->get_record("registration",array('id'=>$registrationid,'grade'=> -$scaleid));
@@ -466,7 +469,7 @@ function registration_scale_used_anywhere($scaleid) {
 /// SQL STATEMENTS //////////////////////////////////////////////////////////////////
 
 function registration_log_info($log) {
-    global $CFG;
+  global $CFG, $DB;
     return $DB->get_record_sql("SELECT a.name, u.firstname, u.lastname
                              FROM {$CFG->prefix}registration a, 
                                   {$CFG->prefix}user u
@@ -511,7 +514,7 @@ function registration_get_all_submissions($registration, $sort="", $dir="DESC") 
 
 function registration_get_users_done($registration) {
 /// Return list of users who have done an registration
-    global $CFG;
+  global $CFG, $DB;
     
     $select = "s.course = '$registration->course' AND";
     $site = get_site();
@@ -538,10 +541,10 @@ function registration_get_users_done($registration) {
 
 function registration_get_unmailed_submissions($starttime, $endtime) {
 /// Return list of marked submissions that have not been mailed out for currently enrolled students
-    global $CFG;
+  global $CFG, $DB;
     return $DB->get_records_sql("SELECT s.*, a.course, a.name
                               FROM {$CFG->prefix}registration_submissions s, 
-                                   {$CFG->prefix}registration a,
+                                   {$CFG->prefix}registration a
                              WHERE s.mailed = 0 
                                AND s.timemarked <= $endtime 
                                AND s.timemarked >= $starttime
@@ -739,7 +742,7 @@ function registration_get_recent_mod_activity(&$activities, &$index, $sincetime,
 // Returns all registrations since a given time.  If registration is specified then
 // this restricts the results
     
-    global $CFG;
+  global $CFG, $DB;
 
     if ($registration) {
         $registrationselect = " AND cm.id = '$registration'";
@@ -878,7 +881,7 @@ function registration_reset_userdata($data) {
 //If this function exists, remove_course_userdata will execute it.
 //This function will remove all completeds from the specified registration.
 function registration_delete_userdata($data, $showregistration=true) {
-   global $CFG;
+  global $CFG, $DB;
 
    $resetregistrations = array();
    $dropregistrations = array();
@@ -935,6 +938,9 @@ function registration_reset_course_form_defaults($course) {
 
 // Called by course/reset.php and shows the formdata by coursereset
 function registration_reset_course_form($course) {
+
+   global $DB;
+
    echo get_string('registrationsreset', 'registration'); echo ':<br />';
    if(!$registrations = $DB->get_records('registration', array('course'=>$course->id), 'name')) return;
    
