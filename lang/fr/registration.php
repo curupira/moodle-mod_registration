@@ -1,10 +1,10 @@
 <?php
 $string['notefull'] = 'Même si l \'évènement est complet, vous pouvez quand même vous y inscrire. Vous serez mis sur liste d\'attente (en rouge dans la liste). Si quelqu\'un se désinscrit, la première personne en liste d\'attente sera ajouté aux inscrits et une notification lui sera envoyée par e-mail.';
-$string['subject'] = 'Changement dans les inscriptions à un événèment dans le cours $a->coursename ($a->duedate)';
-$string['message'] = 'Changement dans les inscriptions à un événèment $a->coursename !
+$string['subject'] = 'Changement dans les inscriptions à un événèment dans le cours {$a->coursename} ({$a->duedate})';
+$string['message'] = 'Changement dans les inscriptions à un événèment {$a->coursename} !
 
-Vous aviez demandé à être mis sur liste d\'attente pour l\'événement du $a->duedate ($a->name) dans le cours $a->coursename. 
-Une place s\'est libérée dans les inscriptions, vous êtes dorénavant inscrits à l\'évènement. Si cela ne vous convient pas, merci de vous désinscrire en suivant ce lien : <a href=\'$a->url\'>$a->url</a>.';
+Vous aviez demandé à être mis sur liste d\'attente pour l\'événement du {$a->duedate} ({$a->name}) dans le cours {$a->coursename}. 
+Une place s\'est libérée dans les inscriptions, vous êtes dorénavant inscrits à l\'évènement. Si cela ne vous convient pas, merci de vous désinscrire en suivant ce lien : {$a->url}.';
 $string['lookfor'] = "Recherche";
 $string['or'] = "ou";
 $string['addstudent'] = 'Ajouter étudiant';

@@ -1,10 +1,10 @@
 <?php
 $string['notefull'] = 'Even if the registration date is fully booked you can still register. You will be queued (marked in red). If someone signs out, the first student in the queue will be moved into registeres students and a notification will be sent to him/her by mail.';
-$string['subject'] = 'Change in registration in the course $a->coursename ($a->duedate)';
-$string['message'] = 'Change in registration in the course $a->coursename!
+$string['subject'] = 'Change in registration in the course {$a->coursename} ({$a->duedate})';
+$string['message'] = 'Change in registration in the course {$a->coursename}!
 
-There has been a free place in registration on $a->duedate ($a->name) in the course $a->coursename. 
-You have been registered. If the date does not suit you anymore, please unregister at <a href=\'$a->url\'>$a->url</a>.';
+There has been a free place in registration on {$a->duedate} ({$a->name}) in the course {$a->coursename}. 
+You have been registered. If the date does not suit you anymore, please unregister at {$a->url}.';
 $string['lookfor'] = "Procura estudante";
 $string['or'] = "ou";
 $string['addstudent'] = "Adiciona estudante";

@@ -1,3 +1,14 @@
+2013-10-25 <wendt@math.tu-berlin.de> (2.0.2 = 2013102501)
+
+	* Bug fixed: cron: set_field to new standard
+
+	* Bug fixed: email-text variable wrong
+
+
+2013-04-07    <wendt@math.tu-berlin.de> (2.0.1 = 2013040701)
+
+	* Bug fixed in slovak language
+
 2013-02-05    <wendt@math.tu-berlin.de> (2.0.0 = 2013012301)
 
 	* Final adaptions for Moodle 2. Should be Moodle 2 conform now

@@ -254,7 +254,7 @@ function registration_cron () {
     if ($submissions = registration_get_unmailed_submissions($starttime, $endtime)) {
 
         foreach ($submissions as $key => $submission) {
-            if (! set_field("registration_submissions", "mailed", "1", "id", "$submission->id")) {
+            if (! $DB->set_field("registration_submissions", "mailed", "1", array("id" => $submission->id))) {
                 echo "Could not update the mailed field for id $submission->id.  Not mailed.\n";
                 unset($submissions[$key]);
             }

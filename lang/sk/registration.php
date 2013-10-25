@@ -1,10 +1,10 @@
 <?php
 $string['notefull'] = 'Ak je termín plne obsadený, mô¾ete sa tie¾ prihlási». Dostanete sa do poradovníka (oznaèenie èervenou farbou). Ak sa niekto odhlási, potom prvý ¹tudent v poradovníku bude presunutý medzi zapísaných a bude mu o tom doruèený mail.';
-$string['subject'] = 'Zmena v prihlásení na skú¹ku z predmetu $a->coursename ($a->duedate)';
-$string['message'] = 'Zmena v prihlásení na skú¹ku z predmetu $a->coursename!
+$string['subject'] = 'Zmena v prihlásení na skú¹ku z predmetu {$a->coursename} ({$a->duedate})';
+$string['message'] = 'Zmena v prihlásení na skú¹ku z predmetu {$a->coursename}!
 
-V termíne $a->duedate ($a->name) sa uvoµnilo miesto na skú¹ke z predmetu $a->coursename. 
-Boli ste zaradený(á) medzi riadne zapísaných. Ak Vám tento termín nevyhovuje, odhláste sa cez <a href=\'$a->url\'>$a->url</a>.';
+V termíne {$a->duedate} ({$a->name}) sa uvoµnilo miesto na skú¹ke z predmetu {$a->coursename}. 
+Boli ste zaradený(á) medzi riadne zapísaných. Ak Vám tento termín nevyhovuje, odhláste sa cez {$a->url}.';
 $string['lookfor'] = "Vyhµada»";
 $string['or'] = "alebo";
 $string['addstudent'] = "Prihlási» ¹tudenta";

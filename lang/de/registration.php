@@ -1,10 +1,10 @@
 <?php
 $string['notefull'] = 'Auch wenn der Termin ausgebucht ist, können Sie sich noch anmelden. Sie kommen in die Warteschlange. Falls sich jemand abmeldet, rückt der/die Erste der Warteschlange nach und wird per eMail informiert.';
-$string['subject'] = 'Aenderung bei den Terminvergaben im Kurs $a->coursename ($a->duedate)';
-$string['message'] = 'Aenderung bei den Terminvergaben im Kurs $a->coursename!
+$string['subject'] = 'Aenderung bei den Terminvergaben im Kurs {$a->coursename} ({$a->duedate})';
+$string['message'] = 'Aenderung bei den Terminvergaben im Kurs {$a->coursename}!
 
-Es gab einen freien Platz bei der Terminvergabe am $a->duedate ($a->name) im Kurs $a->coursename.
-Sie sind nun angemeldet. Falls Ihnen der Termin nicht mehr passt, melden Sie sich bitte ab unter <a href=\'$a->url\'>$a->url</a>.';
+Es gab einen freien Platz bei der Terminvergabe am {$a->duedate} ({$a->name}) im Kurs {$a->coursename}.
+Sie sind nun angemeldet. Falls Ihnen der Termin nicht mehr passt, melden Sie sich bitte ab unter {$a->url}.';
 $string['lookfor'] = "Suche";
 $string['or'] = "oder";
 $string['addstudent'] = "Teilnehmer hinzufügen";
