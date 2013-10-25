@@ -1,4 +1,12 @@
-2013-10-25 <wendt@math.tu-berlin.de> (2.0.2 = 2013102502)
+2013-10-25 <wendt@math.tu-berlin.de> (2.0.4 = 2013102503)
+
+	* tested with Moodle 2.5.2+
+
+	* Legacy type admin in access.php was renamed to manager
+
+	* componentname_capabilities array is deprecated, wo use $capabilities array now
+
+2013-10-25 <wendt@math.tu-berlin.de> (2.0.3 = 2013102502)
 
 	* Hungarian Language added. Thanks to Zoltan Medve.
 

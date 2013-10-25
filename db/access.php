@@ -31,7 +31,7 @@
 // For the core capabilities, the variable is $moodle_capabilities.
 
 
-$mod_registration_capabilities = array(
+$capabilities = array(
 
      'mod/registration:addinstance' => array(
 	 'riskbitmask' => RISK_XSS,
@@ -53,7 +53,7 @@ $mod_registration_capabilities = array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'coursecreator' => CAP_ALLOW,
-            'admin' => CAP_ALLOW
+            'manager' => CAP_ALLOW
         )
     ),
 
@@ -65,7 +65,7 @@ $mod_registration_capabilities = array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'coursecreator' => CAP_ALLOW,
-            'admin' => CAP_ALLOW
+            'manager' => CAP_ALLOW
         )
     ),
 
@@ -77,7 +77,7 @@ $mod_registration_capabilities = array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'coursecreator' => CAP_ALLOW,
-            'admin' => CAP_ALLOW
+            'manager' => CAP_ALLOW
         )
     )
 );
