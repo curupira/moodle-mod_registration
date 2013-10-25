@@ -1,3 +1,9 @@
+2013-10-25 <wendt@math.tu-berlin.de> (2.0.2 = 2013102502)
+
+	* Hungarian Language added. Thanks to Zoltan Medve.
+
+	* Bug fixed in database setup by Zoltan Medve.
+
 2013-10-25 <wendt@math.tu-berlin.de> (2.0.2 = 2013102501)
 
 	* Bug fixed: cron: set_field to new standard
