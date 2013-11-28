@@ -756,7 +756,7 @@ function registration_get_recent_mod_activity(&$activities, &$index, $sincetime,
     }
 
     $registrations = $DB->get_records_sql("SELECT asub.*, u.firstname, u.lastname, u.picture, u.id as userid,
-                                           a.grade as maxgrade, name, cm.instance, cm.section, a.type
+                                           a.grade as maxgrade, name, cm.instance, cm.section 
                                   FROM {$CFG->prefix}registration_submissions asub,
                                        {$CFG->prefix}user u,
                                        {$CFG->prefix}registration a,
@@ -784,7 +784,7 @@ function registration_get_recent_mod_activity(&$activities, &$index, $sincetime,
 
           $tmpactivity->content->grade = $registration->grade;
           $tmpactivity->content->maxgrade = $registration->maxgrade;
-          $tmpactivity->content->type = $registration->type;
+          // $tmpactivity->content->type = $registration->type;
 
           $tmpactivity->user->userid = $registration->userid;
           $tmpactivity->user->fullname = fullname($registration);
