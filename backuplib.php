@@ -29,7 +29,7 @@
         $status = true;
 
         //Iterate over registration table
-        $registrations = $DB->get_records("registration",array('course'->$preferences->backup_course),"id");
+        $registrations = $DB->get_records("registration", array("course" => $preferences->backup_course), "id");
         if ($registrations) {
             foreach ($registrations as $registration) {
                 if (backup_mod_selected($preferences,'registration',$registration->id)) {
