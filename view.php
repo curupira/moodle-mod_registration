@@ -9,7 +9,7 @@ $a = optional_param('a', 0, PARAM_INT); // registration ID
 //optional_variable($a);// registration ID
 
 
-if ($id) 
+if ($id)
 {
   if (! $cm = $DB->get_record("course_modules", array('id'=>$id)))
     print_error("courseidincorrect","registration");
@@ -17,8 +17,8 @@ if ($id)
     print_error("coursemisconfigured","registration");
   if (! $registration = $DB->get_record("registration",  array('id'=>$cm->instance)))
     print_error("courseincorrect","registration");
-} 
-else 
+}
+else
 {
   if (! $registration = $DB->get_record("registration",  array('id'=>$a)))
     print_error("courseincorrect","registration");
@@ -28,12 +28,15 @@ else
     print_error("courseidincorrect","registration");
 }
 require_course_login($course);
-$context=get_context_instance(CONTEXT_COURSE, $course->id);
+$context = context_course::instance($course->id);
+$cmcontext = context_module::instance($cm->id);
+
 require_capability('mod/registration:view', $context);
 $ismyteacher = has_capability('mod/registration:grade', $context);
 $ismystudent = has_capability('mod/registration:view', $context);
 
-add_to_log($course->id, "registration", "view", "view.php?id=$cm->id", $registration->id, $cm->id);
+//add_to_log($course->id, "registration", "view", "view.php?id=$cm->id", $registration->id, $cm->id);
+\mod_registration\event\viewed_single::create(array("context" => $cmcontext))->trigger();
 
 $strregistrations = get_string("modulenameplural", "registration");
 $strregistration = get_string("modulename", "registration");
@@ -70,7 +73,7 @@ if ($ismyteacher)
 	if(registration_count_submissions($registration))
         {
                 echo '<a href="submissions.php?id='.$registration->id.'">'.get_string("viewsubmissions", "registration").'</a><br>';
-                if (empty($CFG->registration_hide_idnumber)) 
+                if (empty($CFG->registration_hide_idnumber))
 		  {
 		    echo '<a href="print.php?version=0&id='.$registration->id.'">'.get_string("printversionid", "registration").'</a><br>';
 		    echo '<a href="print.php?version=1&id='.$registration->id.'">'.get_string("printversionidname", "registration").'</a><br>';
@@ -78,10 +81,10 @@ if ($ismyteacher)
                 echo '<a href="print.php?version=2&id='.$registration->id.'">'.get_string("printversionname", "registration").'</a><br></p>';
         }
 }
-elseif (!$cm->visible) 
+elseif (!$cm->visible)
         notice(get_string("activityiscurrentlyhidden"));
 
-if ($form = data_submitted()) 
+if ($form = data_submitted())
 {
 
         if ($form->answer == addslashes($stranswer))
@@ -94,8 +97,8 @@ if ($form = data_submitted())
 		$newanswer->comment = "";
                 $newanswer->userid = ($_POST['action']) ? $_POST['idstudent'] : $USER->id;
                 $num_students = $DB->get_records("registration_submissions",array("registration"=>$cm->instance));
-                $sql = "SELECT userid FROM ".$CFG->prefix."registration_submissions, ".$CFG->prefix."registration 
-                WHERE registration = ".$CFG->prefix."registration.id 
+                $sql = "SELECT userid FROM ".$CFG->prefix."registration_submissions, ".$CFG->prefix."registration
+                WHERE registration = ".$CFG->prefix."registration.id
                 AND course = '".$cm->course."'
                 AND userid = '".$USER->id."'
                 AND registration = '".$cm->instance."'";
@@ -104,9 +107,11 @@ if ($form = data_submitted())
                 if (empty($num_students)) $num_students = array() ;
                 if (!$result->userid && ((count($num_students) < $registration->number) || $registration->allowqueue))
                 {
-                  if (! $DB->insert_record("registration_submissions", $newanswer)) 
+                  if (! $DB->insert_record("registration_submissions", $newanswer))
 		    print_error("errorchoice","registration");
-                  add_to_log($course->id, "registration", "subscribe", "view.php?id=$cm->id", $USER->id, $cm->id, $USER->id);
+                  //add_to_log($course->id, "registration", "subscribe", "view.php?id=$cm->id", $USER->id, $cm->id, $USER->id);
+                  \mod_registration\event\user_subscribed::create(array("context" => $cmcontext))->trigger();
+                  local_bzhl_mailer_registration($USER, $name, $cm->course);
                   redirect("view.php?id=$cm->id","",0);
                   exit;
                 }
@@ -146,7 +151,8 @@ if ($form = data_submitted())
                                 email_to_user($student, $site->shortname, $strsubject, get_string("message", "registration", $message));
                         }
                 }
-                add_to_log($course->id, "registration", "unsubscribe", "view.php?id=$cm->id", $user_delete, $cm->id, $USER->id);
+                //add_to_log($course->id, "registration", "unsubscribe", "view.php?id=$cm->id", $user_delete, $cm->id, $USER->id);
+                \mod_registration\event\user_unsubscribed::create(array("context" => $cmcontext))->trigger();
                 redirect("view.php?id=$cm->id","",0);
                 exit;
         }
@@ -157,14 +163,14 @@ echo $OUTPUT->box_start();
 
 $timedifference_due = $registration->timedue - time();
 $timedifference_avail = $registration->timeavailable - time();
-if ($timedifference_due < 31536000) 
+if ($timedifference_due < 31536000)
 {
         // Don't bother showing dates over a year in the future
         $strdifference_due = format_time($timedifference_due);
         $strdifference_avail = format_time($timedifference_avail);
-        if ($timedifference_due < 0) 
+        if ($timedifference_due < 0)
                 $strdifference_due = '<span style="color: red;">'.$strdifference_due.'</span>';
-        if ($timedifference_avail < 0) 
+        if ($timedifference_avail < 0)
                 $strdifference_avail = '<span style="color: red;">'.$strdifference_avail.'</span>';
         $strduedate = userdate($registration->timedue)." ($strdifference_due)";
         $stravailabledate = userdate($registration->timeavailable)." ($strdifference_avail)";
@@ -199,7 +205,7 @@ $table->align[] = "center";
 
 if($ismyteacher)
   {
-    if ($registration->grade) 
+    if ($registration->grade)
       {
 	$table->head[] = $strpoints;
 	$table->align[] = "center";
@@ -301,7 +307,7 @@ $position = registration_get_position_in_list($cm->instance,$USER->id);
 $sql = "SELECT * FROM ".$CFG->prefix."course_modules c
 LEFT JOIN ".$CFG->prefix."registration r ON r.id = c.instance
 LEFT JOIN ".$CFG->prefix."registration_submissions s ON r.id = s.registration
-WHERE s.registration = r.id 
+WHERE s.registration = r.id
 AND c.course = '".$cm->course."'
 AND s.userid = '".$USER->id."'
 AND r.timedue > '".time()."'
@@ -349,10 +355,10 @@ if ($i >= $registration->number)
 }
 
 //if booked on this future registration
-if ($position > 0) 
+if ($position > 0)
 {
        	// if date is closed - do not show button sign out
-        if($registration->timeavailable > time()) 
+        if($registration->timeavailable > time())
        	        echo $cancel_button;
         $registrable = false;
 }
@@ -394,14 +400,14 @@ if ($ismyteacher)
 
                 $select = 'SELECT u.id, u.firstname, u.lastname ';
                 $from = 'FROM '.$CFG->prefix.'user u
-                JOIN '.$CFG->prefix.'role_assignments ra ON ra.userid = u.id 
+                JOIN '.$CFG->prefix.'role_assignments ra ON ra.userid = u.id
                 LEFT JOIN '.$CFG->prefix.'registration_submissions rs ON rs.userid = u.id
                 AND rs.registration = '.$registration->id;
                 $where = ' WHERE ra.contextid = ' . $context->id . '
-                AND u.deleted = 0 
+                AND u.deleted = 0
                 AND (u.lastname like \'%'.$_POST['search'].'%\' OR u.firstname like \'%'.$_POST['search'].'%\')
                 AND rs.userid IS NULL';
-                if($condition) 
+                if($condition)
                         $where .= " AND u.id <> ".implode(" AND u.id <> ", $condition);
                 $sort = ' ORDER BY u.lastname, u.firstname';
 
@@ -434,7 +440,7 @@ if ($ismyteacher)
         echo "<input type='hidden' name='id' value='".$id."'>\n";
         echo "<input type='hidden' name='action' value='1'>\n";
 	html_writer::table($table2);
-        if($result) 
+        if($result)
 	  html_writer::table($table1);
         echo "</form>\n";
 	echo $OUTPUT->box_end();
