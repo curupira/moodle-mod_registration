@@ -59,14 +59,14 @@ class user_subscribed extends base {
 	 * @see \core\event\base::init()
 	 */
 	public function init() {
-		$this->base_init("i");
+		$this->base_init("c");
 	}
 
 	/**
 	 * (non-PHPdoc)
 	 * @see \mod_registration\event\base::get_legacy_eventname()
 	 */
-	public function get_legacy_eventname() {
+	public static function get_legacy_eventname() {
 		return "registration_subscribe";
 	}
 }

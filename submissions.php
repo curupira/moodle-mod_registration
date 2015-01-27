@@ -18,11 +18,9 @@ if (! $course = $DB->get_record("course", array('id'=>$registration->course)))
 if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $course->id))
   print_error("courseidincorrect","registration");
 
-require_login($course->id);
+require_login($course, false, $cm);
 $context = context_course::instance($course->id);
-$cmcontext = context_module::instance($cm->id);
 require_capability('mod/registration:grade', $context);
-$PAGE->set_pagelayout('incourse');
 $ismyteacher = has_capability('mod/registration:grade', $context);
 
 $strregistrations = get_string("modulenameplural", "registration");
@@ -32,16 +30,23 @@ $strsaveallfeedback = get_string("saveallfeedback", "registration");
 
 $url = new moodle_url('/mod/registration/submissions.php', array('id'=>$registration->id));
 $PAGE->set_url($url);
-$PAGE->set_pagelayout('incourse');
 $PAGE->set_title($strregistrations);
-$PAGE->navbar->add($strregistrations, new moodle_url("/mod/registration/index.php?id=".$course->id));
-$PAGE->navbar->add($registration->name, new moodle_url("/mod/registration/view.php?id=".$cm->id));
+$PAGE->navbar->add(get_string("viewsubmissions", "mod_registration"));
 echo $OUTPUT->header();
-
+$options = array(0 => get_string("showcategory", "", get_string("modulename", "mod_registration")),
+                 2 => get_string("download_results", "mod_registration"),
+                 3 => get_string("printversionname", "mod_registration"));
+if (empty($CFG->registration_hide_idnumber)) {
+	$options[4] = get_string("printversionid", "mod_registration");
+	$options[5] = get_string("printversionidname", "mod_registration");
+}
+echo $OUTPUT->single_select(new moodle_url("/mod/registration/view.php", array("a" => $registration->id)),
+                            "redirect",
+                            $options);
+echo $OUTPUT->heading($registration->name);
 if($submissions = registration_get_all_submissions($registration, $sort, $dir)) {
 
 	/// If data is being submitted, then process it
-
         if ($data = data_submitted())
        	{
                	$feedback = array();
@@ -95,12 +100,14 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
        	        }
                	$submissions = registration_get_all_submissions($registration,$sort, $dir);
                 //add_to_log($course->id, "registration", "update grades", "submissions.php?id=$registration->id", "$count users", $cm->id);
-                \mod_registration\event\grades_updated::create(array("context" => $cmcontext))->trigger();
+               	$eventdata = array("context" => context_module::instance($cm->id), "objectid" => $registration->id);
+                \mod_registration\event\grades_updated::create($eventdata)->trigger();
        	        notify(get_string("feedbackupdated", "registration", $count));
         }
        	else {
                	//add_to_log($course->id, "registration", "view submission", "submissions.php?id=$registration->id", "$registration->id", $cm->id);
-       	        \mod_registration\event\submission_viewed::create(array("context" => $cmcontext))->trigger();
+       	        $eventdata = array("context" => context_module::instance($cm->id), "objectid" => $registration->id);
+       	        \mod_registration\event\submission_viewed::create($eventdata)->trigger();
        	}
         // Submission sorting
        	$sorttypes = array('firstname', 'lastname', 'timemodified', 'grade');
@@ -121,12 +128,15 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
                 }
        	        else
                	        $newdir = 'ASC';
-                echo "<a href=\"submissions.php?id=$registration->id&sort=$sorttype&dir=$newdir\">$label</a>";
+                echo html_writer::link(new moodle_url("/mod/registration/submissions.php", array("id" => $registration->id,
+                                                                                                 "sort" => $sorttype,
+                                                                                                 "dir" => $newdir)),
+                                       $label);
        	        if ($sort == $sorttype)
                	{
                         // Current sort
-       	                $diricon = $dir == 'ASC' ? 'down' : 'up';
-               	        echo " <img src=\"$CFG->wwwroot/pix/t/$diricon.gif\" />";
+       	                $diricon = ($dir == 'ASC') ? "i/down" : "i/up";
+               	        echo $OUTPUT->pix_icon($diricon, get_string("sortby"));
                 }
        	        echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         }

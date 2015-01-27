@@ -59,12 +59,19 @@ class mod_registration_mod_form extends moodleform_mod {
 
     for($i=$CFG->registration_maxstudents; $i>=1; $i--) $choices[$i] = $i;
     $mform->addElement('select', 'number', get_string('maximumsize', 'registration'), $choices);
-    $mform->addElement('modgrade', 'grade', get_string('maximumpoints', 'registration'), false);
     $mform->addElement('text', 'room', get_string('place', 'registration'), 'size="10" maxlength="30"');
     $mform->addElement('checkbox', 'allowqueue', get_string('allowqueue', 'registration'));
-    $mform->addElement('date_time_selector', 'timedue', get_string('duedate', 'registration'));
     $mform->addElement('date_time_selector', 'timeavailable', get_string('availabledate', 'registration'));
+    $mform->addElement('date_time_selector', 'timedue', get_string('duedate', 'registration'));
+    $mform->addElement('modgrade', 'grade', get_string('maximumpoints', 'registration'), false);
 
+    /* TYPES */
+    $paramtypes = array("number" => PARAM_INT,
+                        "room" => PARAM_TEXT,
+                        "allowqueue" => PARAM_BOOL,
+                        "timedue" => PARAM_INT,
+                        "timeavailable" => PARAM_INT);
+    $mform->setTypes($paramtypes);
 
     //-------------------------------------------------------------------------------
     // add standard elements, common to all modules

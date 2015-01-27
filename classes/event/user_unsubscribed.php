@@ -57,7 +57,7 @@ class user_unsubscribed extends base {
 	 * (non-PHPdoc)
 	 * @see \mod_registration\event\base::get_legacy_eventname()
 	 */
-	public function get_legacy_eventname() {
+	public static function get_legacy_eventname() {
 		return "registration_unsubscribe";
 	}
 }

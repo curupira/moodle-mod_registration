@@ -19,20 +19,20 @@ namespace mod_registration\event;
 defined("MOODLE_INTERNAL") || die();
 
 /**
- * Registration viewed all event
+ * Registration downloaded event
  *
  * @package mod_registration
  * @copyright 2015 Jan Eberhardt <eberhardt@math.tu-berlin.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class viewed_all extends \core\event\base {
+class download_csv extends base {
 
 	/**
-	 * (non-PHPdoc)
-	 * @see \mod_registration\event\base::get_name()
+	 *
+	 * @return string
 	 */
 	public static function get_name() {
-		return "Registration viewed all";
+		return "Registration downloaded";
 	}
 
 	/**
@@ -40,7 +40,7 @@ class viewed_all extends \core\event\base {
 	 * @see \core\event\base::get_description()
 	 */
 	public function get_description() {
-		return "The user with id '" . $this->userid . "' viewed all registrations of course with id '". $this->courseid . "'.";
+		return "The user with id '$this->userid' downloaded the registration with id '" . $this->objectid . "' as CSV file.";
 	}
 
 	/**
@@ -48,15 +48,6 @@ class viewed_all extends \core\event\base {
 	 * @see \core\event\base::init()
 	 */
 	public function init() {
-		$this->data["crud"] = "r";
-		$this->data["edulevel"] = self::LEVEL_PARTICIPATING;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see \mod_registration\event\base::get_legacy_eventname()
-	 */
-	public static function get_legacy_eventname() {
-		return "registration_viewall";
+		$this->base_init("r");
 	}
 }

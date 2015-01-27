@@ -19,29 +19,13 @@ namespace mod_registration\event;
 defined("MOODLE_INTERNAL") || die();
 
 /**
- * Registration base event
+ * Registration base event for module context
  *
  * @package mod_registration
  * @copyright 2015 Jan Eberhardt <eberhardt@math.tu-berlin.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base extends \core\event\base {
-
-	/* Necessary implementations for subclass */
-
-	/**
-	 * (non-PHPdoc)
-	 * @see \core\event\base::get_name()
-	 */
-	public abstract static function get_name();
-
-	/**
-	 * (non-PHPdoc)
-	 * @see \core\event\base::get_description()
-	*/
-	public abstract function get_description();
-
-	/* Default implementations */
 
 	/**
 	 * (non-PHPdoc)
@@ -57,20 +41,7 @@ abstract class base extends \core\event\base {
 	protected function base_init($crud) {
 		$this->data["crud"] = $crud;
 		$this->data["edulevel"] = self::LEVEL_PARTICIPATING;
-
-		$cm = get_coursemodule_from_id("registration", $this->contextinstanceid);
-		$this->objecttable = "registration";
-		$this->objectid = $cm->instance;
-	}
-
-	/**
-	 * Returns the name of the legacy event.
-	 *
-	 * @return string legacy event name
-	 */
-	public static function get_legacy_eventname() {
-		$namespace = explode('\\', get_class($this));
-		return array_pop($namespace);
+		$this->data["objecttable"] = "registration";
 	}
 
 	/**

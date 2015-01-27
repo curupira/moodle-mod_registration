@@ -3,7 +3,7 @@ $string['notefull'] = 'Even if the registration date is fully booked you can sti
 $string['subject'] = 'Change in registration in the course {$a->coursename} ({$a->duedate})';
 $string['message'] = 'Change in registration in the course {$a->coursename}!
 
-There has been a free place in registration on {$a->duedate} ({$a->name}) in the course {$a->coursename}. 
+There has been a free place in registration on {$a->duedate} ({$a->name}) in the course {$a->coursename}.
 You have been registered. If the date does not suit you anymore, please unregister at {$a->url}.';
 $string['lookfor'] = "Search";
 $string['or'] = "or";
@@ -18,7 +18,7 @@ $string['clearall'] = 'Clear all';
 $string['closed'] = "Date is closed";
 $string['confighideidnumber'] = "Don't show ID Number on print form.";
 $string['configmaxstudents'] = 'Maximal number of students per date.';
-$string['datetext'] = "You are signed in for date"; 
+$string['datetext'] = "You are signed in for date";
 $string['dateerror'] = "Registrationperiod is after the Date!";
 $string['deleteall'] = 'Delete all';
 $string['userdeleted'] = 'User deleted from system.';
@@ -41,7 +41,7 @@ $string['note'] = 'Note';
 $string['noregistrations'] = "There are no registrations";
 $string['nostudentsyet'] = "There are no students yet.";
 $string['notsubmittedyet'] = "Not yet evaluated";
-$string['order'] = "Order"; 
+$string['order'] = "Order";
 $string['place'] = 'Room';
 $string['pluginname'] = 'registration';
 $string['pluginadministration'] = 'Registration administration';
@@ -60,7 +60,7 @@ $string['registrationsreset'] = 'Reset or delete registrations';
 $string['reset_data'] = 'Reset data';
 $string['saveallfeedback'] = "Save all responses";
 $string['submissions'] = 'Submissions';
-$string['submitted'] = 'Submitted'; 
+$string['submitted'] = 'Submitted';
 $string['viewsubmissions'] = 'View submissions';
 
 $string['errorchoice'] = "Could not save your choice";
@@ -71,4 +71,6 @@ $string['invalidregid'] = "Not a valid registration ID";
 $string['alreadygraded'] = "You've already been graded - there's no point in uploading anything";
 $string['systemuploadfail'] = "Sorry, an error in the system prevents you from uploading files: contact your teacher or system administrator";
 $string['weirderror'] = "Weird registration error";
+
+$string['download_results'] = 'Download results';
 ?>

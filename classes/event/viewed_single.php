@@ -40,8 +40,6 @@ class viewed_single extends base {
 	 * @see \core\event\base::get_description()
 	 */
 	public function get_description() {
-		global $DB;
-		$registrationid = $DB->get_field("course_modules", "instance", array("id" => $this->contextinstanceid));
 		return "The user with id '$this->userid' viewed the registration with id '" . $this->objectid . "'.";
 	}
 
@@ -57,7 +55,7 @@ class viewed_single extends base {
 	 * (non-PHPdoc)
 	 * @see \mod_registration\event\base::get_legacy_eventname()
 	 */
-	public function get_legacy_eventname() {
+	public static function get_legacy_eventname() {
 		return "registration_view";
 	}
 }

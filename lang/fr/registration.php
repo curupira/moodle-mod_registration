@@ -3,7 +3,7 @@ $string['notefull'] = 'Même si l \'évènement est complet, vous pouvez quand m
 $string['subject'] = 'Changement dans les inscriptions à un événèment dans le cours {$a->coursename} ({$a->duedate})';
 $string['message'] = 'Changement dans les inscriptions à un événèment {$a->coursename} !
 
-Vous aviez demandé à être mis sur liste d\'attente pour l\'événement du {$a->duedate} ({$a->name}) dans le cours {$a->coursename}. 
+Vous aviez demandé à être mis sur liste d\'attente pour l\'événement du {$a->duedate} ({$a->name}) dans le cours {$a->coursename}.
 Une place s\'est libérée dans les inscriptions, vous êtes dorénavant inscrits à l\'évènement. Si cela ne vous convient pas, merci de vous désinscrire en suivant ce lien : {$a->url}.';
 $string['lookfor'] = "Recherche";
 $string['or'] = "ou";
@@ -14,9 +14,9 @@ $string['assessmentyour'] = "Votre note";
 $string['booked'] = 'Réservé';
 $string['clearall'] = 'Effacer tout';
 $string['closed'] = "Les inscriptions sont terminées.";
-$string['datetext'] = "Vous êtes inscrits à l'évènement"; 
+$string['datetext'] = "Vous êtes inscrits à l'évènement";
 // Display a message when unsubscribing [PASCAL Univ. Paris Ouest] :
-$string['unsubscribetext'] = "Vous êtes désinscrits de l'évènement"; 
+$string['unsubscribetext'] = "Vous êtes désinscrits de l'évènement";
 $string['deleteall'] = 'Supprimer tout';
 $string['drop_registration'] = 'Supprimer les évènements eux-mêmes';
 $string['duedate'] = 'Date de l\'évènement';
@@ -32,7 +32,7 @@ $string['modulenameplural'] = 'Inscription à un évènement';
 $string['note'] = 'Note';
 $string['noregistrations'] = "Il n'y a aucun inscrit";
 $string['notsubmittedyet'] = "L'évaluation n'a pas encore été faite";
-$string['order'] = "Ordre"; 
+$string['order'] = "Ordre";
 $string['place'] = 'Lieu';
 $string['points'] = 'Points';
 $string['pointsplural'] = 'Points';
@@ -49,7 +49,8 @@ $string['reset_data'] = 'Supprimer les inscriptions aux évènements';
 //$string['strattemptlabel'] = 'Attempts: Score, Date Time (Duration), [Penalties]';
 $string['saveallfeedback'] = "Sauvegarder tous les feedbacks";
 $string['submissions'] = 'Feedbacks';
-$string['submitted'] = 'Envoyé'; 
+$string['submitted'] = 'Envoyé';
 $string['viewsubmissions'] = 'Voir les feedbacks';
+$string['download_results'] = 'T&eacute;l&eacute;charger les r&eacute;sultats';
 ?>
 
