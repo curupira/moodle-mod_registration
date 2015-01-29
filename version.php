@@ -1,4 +1,4 @@
-<?PHP // $Id: version.php,v 1.4.2 2012/07/11 20:43:00 
+<?PHP // $Id: version.php,v 1.4.2 2012/07/11 20:43:00
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -24,8 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$module->version  = 2013112802;
-$module->release  = 'v2.0.6';    // human-friendly version name
+$module->version  = 2013112806; //was 2013112802
+$module->release  = 'v2.1.0';    // human-friendly version name
 $module->requires = 2013051402;  // Requires this Moodle version
 $module->cron     = 60;
 

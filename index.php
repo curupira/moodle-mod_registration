@@ -30,7 +30,7 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
-$id = required_param('id', PARAM_INT);           // Course Module ID 
+$id = required_param('id', PARAM_INT);           // Course Module ID
 //    require_variable($id);   // course
 
 if (! $course = $DB->get_record("course", array("id"=>$id))) {
@@ -38,12 +38,13 @@ if (! $course = $DB->get_record("course", array("id"=>$id))) {
 }
 
 require_course_login($course);
-$context=get_context_instance(CONTEXT_COURSE, $course->id);
+$context = context_course::instance($course->id);
 require_capability('mod/registration:view', $context);
 $ismyteacher = has_capability('mod/registration:grade', $context);
 $ismystudent = has_capability('mod/registration:view', $context);
 
-add_to_log($course->id, "registration", "view all", "index.php?id=$course->id", "");
+//add_to_log($course->id, "registration", "view all", "index.php?id=$course->id", "");
+\mod_registration\event\viewed_all::create(array("context" => $context))->trigger();
 
 $strregistrations = get_string("modulenameplural", "registration");
 $strregistration = get_string("modulename", "registration");
@@ -70,27 +71,27 @@ $timenow = time();
 $table = new html_table();
 $table->attributes['style']="margin-left:auto; margin-right:auto;";
 
-if ($course->format == "weeks" && $ismyteacher) 
+if ($course->format == "weeks" && $ismyteacher)
   {
     $table->head  = array ($strweek, $strduedate, $stravailabledate, get_string("registrations", "registration"));
     $table->align = array ("center", "left", "left", "center");
   }
-elseif ($course->format == "weeks") 
+elseif ($course->format == "weeks")
   {
     $table->head  = array ($strweek, $strduedate, $stravailabledate, get_string("registrations", "registration"),get_string("booked", "registration"));
     $table->align = array ("center", "left", "left", "center", "center");
   }
-elseif ($course->format == "topics" && $ismyteacher) 
+elseif ($course->format == "topics" && $ismyteacher)
   {
     $table->head  = array ($strtopic, $strduedate, $stravailabledate, get_string("registrations", "registration"));
     $table->align = array ("center", "left", "left", "center");
-  } 
-elseif ($course->format == "topics") 
+  }
+elseif ($course->format == "topics")
   {
     $table->head  = array ($strtopic, $strduedate, $stravailabledate, get_string("registrations", "registration"),get_string("booked", "registration"));
     $table->align = array ("center", "left", "left", "center", "center");
-  } 
-else 
+  }
+else
   {
     $table->head  = array ($strduedate);
     $table->align = array ("left", "left");
@@ -125,7 +126,7 @@ foreach ($registrations as $registration) {
     //Show normal if the mod is visible
     $link = "<a href=\"view.php?id=$registration->coursemodule\">$due</a>";
   }
-  
+
   if ($registration->timeavailable < time())
     {
       $timeavailable="<span class=\"dimmed_text\">".userdate($registration->timeavailable)."</span>";
@@ -143,7 +144,7 @@ foreach ($registrations as $registration) {
     }
     $currentsection = $registration->section;
   }
-	
+
   $position = registration_get_position_in_list($registration->id,$USER->id);
   if ($position == 0) {
     $booked = "";
@@ -152,15 +153,15 @@ foreach ($registrations as $registration) {
   } else {
     $booked = get_string("yes", "moodle");
   }
-        
-  if ($course->format == "weeks" or $course->format == "topics") 
+
+  if ($course->format == "weeks" or $course->format == "topics")
     {
       if($ismyteacher)
 	$table->data[] = array ($printsection, $link, $timeavailable, $count."/".$registration->number);
       else
 	$table->data[] = array ($printsection, $link, $timeavailable, $count."/".$registration->number,$booked);
-    } 
-  else 
+    }
+  else
     {
       $table->data[] = array ($link, $submitted);
     }
@@ -174,7 +175,7 @@ echo "<br />";
 $legend = new html_table();
 $legend->attributes['style']="margin-left:auto; margin-right:auto;";
 $legend->head = array( '<div style="color: red; font-weight: bold;">'.get_string("legend","registration").'</div>');
-    
+
 echo html_writer::table($legend);
 echo $OUTPUT->footer();
 ?>

@@ -3,7 +3,7 @@ $string['notefull'] = 'Annak ellenére, hogy a vizsgaidőpont megtelt, jelentkez
 $string['subject'] = 'Változás a vizsgajelentkezésben! Kurzus: {$a->coursename} ({$a->duedate})';
 $string['message'] = 'Változás a vizsgajelentkezésben a következő kurzuson: {$a->coursename}!
 
-Felszabadult egy hely a {$a->duedate} ({$a->name}) napon a {$a->coursename} kurzuson. 
+Felszabadult egy hely a {$a->duedate} ({$a->name}) napon a {$a->coursename} kurzuson.
 Automatikusan feljelentkeztettük. Ha az időpont már nem felel meg, kérjük jelentkezzen le itt: {$a->url}.';
 $string['lookfor'] = "Keresés";
 $string['or'] = "vagy";
@@ -41,7 +41,7 @@ $string['note'] = 'Megjegyzés';
 $string['noregistrations'] = "Nincsenek jelentkezések";
 $string['nostudentsyet'] = "Még nincsenek hallgatók.";
 $string['notsubmittedyet'] = "Nincs még kiértékelve";
-$string['order'] = "Sorrend"; 
+$string['order'] = "Sorrend";
 $string['place'] = 'Terem';
 $string['pluginname'] = 'registration';
 $string['pluginadministration'] = 'Vizsgaidőpont adminisztráció';
@@ -60,7 +60,7 @@ $string['registrationsreset'] = 'Jelentkezések törlése vagy visszaállítása
 $string['reset_data'] = 'Adatok visszaállítása';
 $string['saveallfeedback'] = "Az összes válasz mentése";
 $string['submissions'] = 'Értékelések';
-$string['submitted'] = 'Értékelve'; 
+$string['submitted'] = 'Értékelve';
 $string['viewsubmissions'] = 'Értékelések megtekintése';
 $string['errorchoice'] = "Nem tudtuk menteni a választását";
 $string['courseidincorrect'] = "A kurzusmodul azonosítója hibás";
@@ -70,4 +70,5 @@ $string['invalidregid'] = "Érvénytelen regisztrációs azonosító";
 $string['alreadygraded'] = "Már kapott értékelést - nincs értelme bármit is feltölteni";
 $string['systemuploadfail'] = "Sajnáljuk, de rendszerhiba miatt nem sikerült feltölteni az állományokat: lépjen kapcsolatba a tanárával vagy a rendszergazdával.";
 $string['weirderror'] = "Ismeretlen regisztrációs hiba";
+$string['download_results'] = 'Letöltés eredmények';
 ?>

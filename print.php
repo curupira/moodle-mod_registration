@@ -30,7 +30,7 @@ if (! $cm = get_coursemodule_from_instance("registration", $registration->id, $c
   print_error("courseidincorrect","registration");
 
 require_course_login($course);
-$context=get_context_instance(CONTEXT_COURSE, $course->id);
+$context =  context_course::instance($course->id);
 require_capability('mod/registration:viewlist', $context);
 $ismyteacher = has_capability('mod/registration:grade', $context);
 $ismystudent = has_capability('mod/registration:view', $context);
@@ -38,7 +38,7 @@ $ismystudent = has_capability('mod/registration:view', $context);
 if (!empty($CFG->registration_hide_idnumber))
   $version = 2;
 
-echo '<html> 
+echo '<html>
 <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">

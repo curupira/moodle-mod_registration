@@ -3,7 +3,7 @@ $string['notefull'] = 'Even if the registration date is fully booked you can sti
 $string['subject'] = 'Change in registration in the course {$a->coursename} ({$a->duedate})';
 $string['message'] = 'Change in registration in the course {$a->coursename}!
 
-There has been a free place in registration on {$a->duedate} ({$a->name}) in the course {$a->coursename}. 
+There has been a free place in registration on {$a->duedate} ({$a->name}) in the course {$a->coursename}.
 You have been registered. If the date does not suit you anymore, please unregister at {$a->url}.';
 $string['lookfor'] = "Procura estudante";
 $string['or'] = "ou";
@@ -14,7 +14,7 @@ $string['assessmentyour'] = "Sua avaliacao";
 $string['booked'] = 'Marcado';
 $string['clearall'] = 'Limpar todos';
 $string['closed'] = "Avaliacao encerrada";
-$string['datetext'] = "Voce esta convocado na data"; 
+$string['datetext'] = "Voce esta convocado na data";
 $string['deleteall'] = 'Remover todos';
 $string['duedate'] = 'Data';
 $string['early'] = "\$a early";
@@ -28,7 +28,7 @@ $string['modulename'] = 'Data do exame';
 $string['modulenameplural'] = 'Datas de exames';
 $string['note'] = 'Detalhes';
 $string['notsubmittedyet'] = "Not yet evaluated";
-$string['order'] = "Ordem"; 
+$string['order'] = "Ordem";
 $string['place'] = 'Sala ou local';
 $string['points'] = 'Pontos';
 $string['pointsplural'] = 'Pontos';
@@ -40,6 +40,7 @@ $string['registrationname'] = 'Nome do exame';
 $string['registrations'] = 'Registros';
 $string['saveallfeedback'] = "Salvar todas as respostas";
 $string['submissions'] = 'Submissoes';
-$string['submitted'] = 'Submetidos'; 
+$string['submitted'] = 'Submetidos';
 $string['viewsubmissions'] = 'Ver Submissoes';
+$string['download_results'] = 'Resultados de download';
 ?>
