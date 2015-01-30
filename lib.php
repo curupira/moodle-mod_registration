@@ -1,7 +1,10 @@
 <?PHP
 
+defined("MOODLE_INTERNAL") || die();
+
 //require_once($CFG->libdir.'/filelib.php');
 //require_once("$CFG->dirroot/files/mimetypes.php");
+require_once($CFG->dirroot . '/calendar/lib.php');
 
 //define("OFFLINE",      "0");
 //define("UPLOADSINGLE", "1");
