@@ -1,3 +1,16 @@
+2015-02-12 Jan Eberhardt <eberhardt@math.tu-berlin.de> (2.1.1 = 2015021201)
+
+	* Bug fixed calendar_event class is not loaded automatically by moodle
+
+2015-01-27 Jan Eberhardt <eberhardt@math.tu-berlin.de> (2.1.0 = 2013112806)
+
+	* Event API fixes
+	* Download feature: You can now download results as CSV file
+	* Settings: Rearragned items and fixes (types set)
+	* Theme: Activity settings are now displayed in setting block, new switch in the left upper corner
+	* Fixes: PHP Warnings & Moodle warnings solved, deprecated methods replaced
+
+
 2014-01-31 <wendt@math.tu-berlin.de> (2.0.6 = 2013112802)
 
 	* Bug fixed in restore_registration_stepslib
