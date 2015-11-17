@@ -20,13 +20,16 @@
  *
  * @package    mod
  * @subpackage registration
- * @author     Miroslav Fikar, Marc-Robin Wendt
+ * @author     Miroslav Fikar, Marc-Robin Wendt, Jan Eberhardt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$module->version  = 2015021201; //was 2013112802
-$module->release  = 'v2.1.1';    // human-friendly version name
-$module->requires = 2013051402;  // Requires this Moodle version
-$module->cron     = 60;
+defined("MOODLE_INTERNAL") || die();
+
+$plugin->component = "mod_registration";
+$plugin->version   = 2015021202;
+$plugin->requires  = 2013051402;
+$plugin->release   = 'v2.1.2';
+$plugin->cron      = 60;
 
 ?>
