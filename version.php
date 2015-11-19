@@ -24,9 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$module->version  = 2015021201; //was 2013112802
-$module->release  = 'v2.1.1';    // human-friendly version name
-$module->requires = 2013051402;  // Requires this Moodle version
-$module->cron     = 60;
+$plugin->version  = 2015021201; //was 2013112802
+$plugin->release  = 'v2.1.1';    // human-friendly version name
+$plugin->requires = 2013051402;  // Requires this Moodle version
+$plugin->cron     = 60;
+$plugin->component     = 'mod_registration';
 
 ?>
