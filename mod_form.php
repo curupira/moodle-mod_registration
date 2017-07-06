@@ -55,7 +55,7 @@ class mod_registration_mod_form extends moodleform_mod {
     //    $mform->addHelpButton('name', 'newmodulename', 'newmodule');
 
     // Adding the standard "intro" and "introformat" fields
-    $this->add_intro_editor();
+    $this->standard_intro_elements();
 
     for($i=$CFG->registration_maxstudents; $i>=1; $i--) $choices[$i] = $i;
     $mform->addElement('select', 'number', get_string('maximumsize', 'registration'), $choices);
