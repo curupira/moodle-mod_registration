@@ -50,6 +50,7 @@ $string['pointsplural'] = 'Points';
 $string['printversionid'] = 'Print version: just ID';
 $string['printversionidname'] = 'Print version: with ID and name';
 $string['printversionname'] = 'Print version: just name';
+$string['registration:addinstance'] = "Add registration";
 $string['registration:grade'] = 'Grade registration';
 $string['registration:view'] = 'View registration';
 $string['registration:viewlist'] = 'View registration list';

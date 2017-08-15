@@ -35,6 +35,7 @@ $string['pointsplural'] = 'Pontos';
 $string['printversionid'] = 'Versao impressa : sem nome';
 $string['printversionname'] = 'Versao impressa : com nome';
 $string['really'] = 'Voce deseja realmente remover os resultados ?';
+$string['registration:addinstance'] = "Adicionar registro";
 $string['registeredon'] = 'Registrado em:';
 $string['registrationname'] = 'Nome do exame';
 $string['registrations'] = 'Registros';

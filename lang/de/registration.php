@@ -7,6 +7,7 @@ Es gab einen freien Platz bei der Terminvergabe am {$a->duedate} ({$a->name}) im
 Sie sind nun angemeldet. Falls Ihnen der Termin nicht mehr passt, melden Sie sich bitte ab unter {$a->url}.';
 $string['lookfor'] = "Suche";
 $string['or'] = "oder";
+$string['registration:addinstance'] = "Terminvergabe hinzufügen";
 $string['addstudent'] = "Teilnehmer hinzufügen";
 $string['allowqueue'] = "Warteliste erlauben";
 $string['answer'] = "Eintragen";
@@ -48,6 +49,7 @@ $string['pointsplural'] = 'Bewertung';
 $string['printversionid'] = 'Druckversion: nur mit ID';
 $string['printversionidname'] = 'Druckversion: mit ID und Name';
 $string['printversionname'] = 'Druckversion: nur mit Name';
+$string['registration:addinstance'] = "Terminvergabe hinzufügen";
 $string['registeredon'] = 'Registered On';
 $string['registrationname'] = 'Termin Bezeichnung';
 $string['registrations'] = 'Anmeldungen';

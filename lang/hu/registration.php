@@ -50,6 +50,7 @@ $string['pointsplural'] = 'Pontszámok';
 $string['printversionid'] = 'Nyomtatási nézet: csak azonosítóval';
 $string['printversionidname'] = 'Nyomtatási nézet: névvel és azonosítóval';
 $string['printversionname'] = 'Nyomtatási nézet: csak névvel';
+$string['registration:addinstance'] = "Add Regisztráció";
 $string['registration:grade'] = 'Vizsga értékelése';
 $string['registration:view'] = 'Jelentkezések megtekintése';
 $string['registration:viewlist'] = 'Jelentkezések listázása';

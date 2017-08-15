@@ -39,6 +39,7 @@ $string['pointsplural'] = 'Points';
 $string['printversionid'] = 'Version imprimable triée par numéro/prénom/nom';
 $string['printversionname'] = 'Version imprimable triée par nom';
 $string['really'] = 'Souhaitez-vous réellement supprimer tous les inscriptions pour cet évènement ?';
+$string['registration:addinstance'] = 'Ajouter un enregistrement';
 $string['registration:grade'] = 'Evaluer les inscriptions';
 $string['registration:view'] = 'Voir les inscriptions aux évènements/les évènements (trad?)';
 $string['registeredon'] = 'Inscrits à ';
