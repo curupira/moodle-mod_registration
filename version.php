@@ -27,8 +27,8 @@
 defined("MOODLE_INTERNAL") || die();
 
 $plugin->component = "mod_registration";
-$plugin->version   = 2017081501;
-$plugin->release   = 'v2.1.4';
+$plugin->version   = 2017081502;
+$plugin->release   = 'v2.1.5';
 $plugin->requires  = 2016120503;
 $plugin->cron      = 60;
 
