@@ -466,4 +466,3 @@ if ($ismyteacher)
 	// DOESN'T WORK.
 }
 echo $OUTPUT->footer();
-?>
