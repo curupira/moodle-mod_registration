@@ -86,7 +86,7 @@ $table->align[] = "left";
 
 $grades = make_grades_menu($registration->grade);
 
-$students = $DB->get_records("registration_submissions",array('registration'=>$cm->instance));
+$students = $DB->get_records("registration_submissions",array('registration'=>$cm->instance), 'timecreated');
 $i = 0;
 if (!$students) $students = array();
 foreach ($students as $data)

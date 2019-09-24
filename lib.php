@@ -962,7 +962,7 @@ function registration_delete_course_module($id) {
 function registration_get_position_in_list($registration_id,$userid) {
   global $CFG, $DB;
 
-  $students = $DB->get_records("registration_submissions",array("registration"=>$registration_id),"id","userid");
+  $students = $DB->get_records("registration_submissions",array("registration"=>$registration_id),"timecreated","userid");
   if (!$students) { return 0; }
   $i = 0;
   foreach ($students as $data)

@@ -237,7 +237,7 @@ if($ismyteacher)
 
 $scale = make_grades_menu($registration->grade);
 
-$students = $DB->get_records("registration_submissions",array("registration"=>$cm->instance),"id");
+$students = $DB->get_records("registration_submissions",array("registration"=>$cm->instance),'timecreated');
 $i = 0;
 if (!$students) $students = array();
 $text_assessment='';

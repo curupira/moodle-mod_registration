@@ -41,7 +41,7 @@ if ($form->is_submitted() && $form->is_validated()) {
 		default:
 			$sep = ",";
 	}
-	$submissions = $DB->get_records("registration_submissions", array("registration" => $id));
+	$submissions = $DB->get_records("registration_submissions", array("registration" => $id), 'timecreated');
 	$csv = get_string("order", "mod_registration") . $sep
 	     . get_string("firstname") . $sep
 	     . get_string("lastname") . $sep
