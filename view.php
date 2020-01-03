@@ -95,7 +95,7 @@ if ($form = data_submitted())
                 $newanswer->timemodified = $timenow;
                 $newanswer->registration = $registration->id;
 		$newanswer->comment = "";
-                $newanswer->userid = (isset($_POST['action']) && isset($_POST['idstudent'])) ? $_POST['idstudent'] : $USER->id;
+                $newanswer->userid = $USER->id;
                 $num_students = $DB->get_records("registration_submissions",array("registration"=>$cm->instance));
                 $sql = "SELECT userid FROM {registration_submissions} rs, {registration} r
                         WHERE registration = r.id
@@ -117,13 +117,18 @@ if ($form = data_submitted())
         }
         elseif ($form->answer == $stranswercancel)
         {
+                if ($ismyteacher && optional_param('action', false, PARAM_BOOL)) {
+                    $user_delete = optional_param('idstudent_del', $USER->id, PARAM_INT);
+                } else {
+                    $user_delete = $USER->id;
+                }
+
                 $select = "SELECT s.userid, r.number
                            FROM {registration_submissions} s, {registration} r
                            WHERE s.registration = ?
                            AND s.registration = r.id
                            ORDER BY s.id";
                 $result = $DB->get_records_sql($select, array("registration" => $registration->id));
-                $user_delete = (isset($_POST["action"]) && $_POST["action"]) ? $_POST['idstudent_del'] : $USER->id;
                 unset($user_id); // Ensure, that isset($user_id) returns false.
                 if($result)
                 {
