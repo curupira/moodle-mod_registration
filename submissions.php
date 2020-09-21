@@ -79,7 +79,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
                                 // Make sure that we aren't overwriting any recent feedback from other teachers. (see bug #324)
        	                        if ($timewas < $submission->timemarked && (!empty($submission->grade)) && (!empty($submission->comment)))
                	                {
-                       	                notify(get_string("failedupdatefeedback", "registration", fullname(get_complete_user_data('id', $submission->userid)))
+                       	                $OUTPUT->notification(get_string("failedupdatefeedback", "registration", fullname(get_complete_user_data('id', $submission->userid)))
                                	        . "<br>" . get_string("grade") . ": $newsubmission->grade"
                                        	. "<br>" . get_string("feedback", "registration") . ": $newsubmission->comment\n");
                                 }
@@ -92,7 +92,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
                                	                $newsubmission->timemodified = $timenow;
                                        	}
                                         if (! $DB->update_record("registration_submissions", $newsubmission))
-       	                                        notify(get_string("failedupdatefeedback", "registration", $submission->userid));
+       	                                        $OUTPUT->notification(get_string("failedupdatefeedback", "registration", $submission->userid));
                	                        else
                        	                        $count++;
                                	}
@@ -102,7 +102,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
                 //add_to_log($course->id, "registration", "update grades", "submissions.php?id=$registration->id", "$count users", $cm->id);
                	$eventdata = array("context" => context_module::instance($cm->id), "objectid" => $registration->id);
                 \mod_registration\event\grades_updated::create($eventdata)->trigger();
-       	        notify(get_string("feedbackupdated", "registration", $count));
+       	        $OUTPUT->notification(get_string("feedbackupdated", "registration", $count));
         }
        	else {
                	//add_to_log($course->id, "registration", "view submission", "submissions.php?id=$registration->id", "$registration->id", $cm->id);
@@ -166,7 +166,7 @@ if($submissions = registration_get_all_submissions($registration, $sort, $dir)) 
         echo "</form>";
 
 } else {
-	echo notify(get_string("nostudentsyet","registration"));
+	echo $OUTPUT->notification(get_string("nostudentsyet","registration"));
 }
 
 echo $OUTPUT->footer();
